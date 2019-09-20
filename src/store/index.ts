@@ -8,6 +8,9 @@ import createRootReducer from './createRootReducer';
 
 const rootReducer = createRootReducer();
 
+export type AppState = ReturnType<typeof rootReducer>;
+
+
 const composeEnhancers = composeWithDevTools({});
 
 const store = createStore(rootReducer, composeEnhancers());
