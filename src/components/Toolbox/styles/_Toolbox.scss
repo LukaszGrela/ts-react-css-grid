@@ -3,10 +3,16 @@
   flex-direction: column;
   &_button {
     color: $white;
-    
+
     padding: 1rem;
     margin: 0.25rem;
     border-radius: 0.5rem;
     border: white solid 0.2rem;
+
+    &:disabled {
+      pointer-events: none;
+      border-color: #444;
+      color: #444;
+    }
   }
 }
