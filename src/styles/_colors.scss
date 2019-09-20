@@ -1,0 +1,75 @@
+/*
+----------------------------------------------------------------------------
+Colors.
+----------------------------------------------------------------------------
+*/
+
+/*
+----------------------------------------------------------------------------
+Omnico.
+----------------------------------------------------------------------------
+*/
+$omnico-green: #bccf00 !default;
+$omnico-darkgrey: #494948 !default;
+
+/*
+----------------------------------------------------------------------------
+Accents.
+----------------------------------------------------------------------------
+*/
+$app-red: #f44336 !default;
+$app-deeporange: #ff5722 !default;
+$app-orange: #ff9800 !default;
+$app-amber: #ffc107 !default;
+$app-yellow: #ffeb3b !default;
+$app-lime: #cddc39 !default;
+$app-lightgreen: #8bc34a !default;
+$app-green: #4caf50 !default;
+$app-teal: #009688 !default;
+$app-cyan: #00bcd4 !default;
+$app-lightblue: #03a9f4 !default;
+$app-blue: #2196f3 !default;
+$app-indigo: #3f51b5 !default;
+$app-deeppurple: #673ab7 !default;
+$app-purple: #9c27b0 !default;
+$app-pink: #e91e63 !default;
+
+/*
+----------------------------------------------------------------------------
+States.
+----------------------------------------------------------------------------
+*/
+$color-success: $app-green !default;
+$color-failure: $app-red !default;
+$color-neutral: $app-blue !default;
+
+/*
+----------------------------------------------------------------------------
+Neutral palette.
+----------------------------------------------------------------------------
+*/
+$white: #fff !default;
+$black: #000 !default;
+
+/*
+----------------------------------------------------------------------------
+Specific components.
+----------------------------------------------------------------------------
+*/
+$app-background: darken($white, 10) !default;
+$modal-background: rgba(0, 0, 0, 0.4) !default;
+$text-light: $white !default;
+$text-dark: darken($white, 87) !default;
+$border-color: rgba(0, 0, 0, 0.2) !default;
+
+$box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1) !default;
+$box-shadow-button: 0px 8px 16px rgba(0, 0, 0, 0.1) !default;
+
+/*
+----------------------------------------------------------------------------
+Brand.
+----------------------------------------------------------------------------
+*/
+$brand-background: $white !default;
+$brand-foreground: $text-dark !default;
+$brand-primary: $omnico-green !default;

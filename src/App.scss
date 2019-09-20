@@ -1,0 +1,32 @@
+@import './styles/colors';
+#root {
+  display: grid;
+  grid-template-columns: auto minmax(200px, min-content);
+  grid-template-rows: 2rem minmax(calc(100vh - 4rem), max-content) 2rem;
+  grid-template-areas:
+    'main header'
+    'main menu'
+    'main footer';
+}
+
+header {
+  grid-area: header;
+  background-color: #282c34;
+  color: $white;
+}
+
+main {
+  grid-area: main;
+}
+
+menu {
+  grid-area: menu;
+  background-color: #282c34;
+  color: $white;
+}
+
+footer {
+  grid-area: footer;
+  background-color: #282c34;
+  color: $white;
+}

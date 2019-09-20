@@ -1,0 +1,12 @@
+.Toolbox {
+  display: flex;
+  flex-direction: column;
+  &_button {
+    color: $white;
+    
+    padding: 1rem;
+    margin: 0.25rem;
+    border-radius: 0.5rem;
+    border: white solid 0.2rem;
+  }
+}
