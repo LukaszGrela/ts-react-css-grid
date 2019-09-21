@@ -13,7 +13,13 @@ export interface IModifyGridAction extends AnyAction {
     | typeof REMOVE_ROW;
 }
 
+export interface ICSSGridStyle {
+  gridTemplateColumns?: string;
+  gridTemplateRows?: string;
+}
+
 export interface IGridState {
   rows: number;
   columns: number;
+  style: ICSSGridStyle;
 }
