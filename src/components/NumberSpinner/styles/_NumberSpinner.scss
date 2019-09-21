@@ -1,0 +1,29 @@
+.NumberSpinner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 0.5rem;
+
+  &_label {
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  &_button {
+    width: 2rem;
+    height: 2rem;
+
+    color: white;
+
+    border: white solid 0.2rem;
+    border-radius: 0.5rem;
+
+    &:disabled {
+      pointer-events: none;
+      border-color: #444;
+      color: #444;
+    }
+  }
+}
