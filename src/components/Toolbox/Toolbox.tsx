@@ -9,9 +9,11 @@ export type TAction = typeof ADD | typeof REMOVE;
 export interface IProps {
   modifyColumn: (action: TAction) => void;
   modifyRow: (action: TAction) => void;
+  addGridItem: () => void;
 
   columns: number;
   rows: number;
+  gridItemsLength: number;
 }
 
 const Toolbox: React.FC<IProps> = ({
@@ -19,6 +21,8 @@ const Toolbox: React.FC<IProps> = ({
   modifyRow,
   columns,
   rows,
+  addGridItem,
+  gridItemsLength,
 }: IProps): JSX.Element => {
   const addColumn = (): void => modifyColumn(ADD);
   const removeColumn = (): void => modifyColumn(REMOVE);
@@ -46,6 +50,13 @@ const Toolbox: React.FC<IProps> = ({
         disabled={rows <= 1}
         onClick={removeRow}>
         Delete Row
+      </button>
+      <hr className="Toolbox_spacer" />
+      <button
+        className="Toolbox_button"
+        disabled={columns * rows <= gridItemsLength}
+        onClick={addGridItem}>
+        Add grid item
       </button>
     </div>
   );
