@@ -12,19 +12,31 @@ import {
   removeColumn,
   addRow,
   removeRow,
+  setColumnGap,
+  setRowGap,
 } from '../../store/Grid/actions';
 import { clearGridItems, addGridItem } from '../../store/GridItems/actions';
 
-type TStateProps = Pick<IToolboxProps, 'columns' | 'rows' | 'gridItemsLength'>;
+type TStateProps = Pick<
+  IToolboxProps,
+  'columns' | 'rows' | 'gridItemsLength' | 'rowGap' | 'columnGap'
+>;
 const mapStateToProps = (state: AppState): TStateProps => ({
   columns: state.grid.columns,
   rows: state.grid.rows,
   gridItemsLength: (state.gridItems.items || []).length,
+  columnGap: state.grid.columnGap,
+  rowGap: state.grid.rowGap,
 });
 
 type TDispatchProps = Pick<
   IToolboxProps,
-  'modifyColumn' | 'modifyRow' | 'addGridItem' | 'clearGridItems'
+  | 'modifyColumn'
+  | 'modifyRow'
+  | 'addGridItem'
+  | 'clearGridItems'
+  | 'changeRowGap'
+  | 'changeColumnGap'
 >;
 const mapDispatchToProps = (dispatch: Dispatch): TDispatchProps => ({
   modifyColumn: (action: TAction): void => {
@@ -46,6 +58,12 @@ const mapDispatchToProps = (dispatch: Dispatch): TDispatchProps => ({
   },
   clearGridItems: (): void => {
     dispatch(clearGridItems());
+  },
+  changeColumnGap: (newValue: number) => {
+    dispatch(setColumnGap(newValue));
+  },
+  changeRowGap: (newValue: number) => {
+    dispatch(setRowGap(newValue));
   },
 });
 

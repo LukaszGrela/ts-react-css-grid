@@ -13,8 +13,13 @@ export interface IProps {
   addGridItem: () => void;
   clearGridItems: () => void;
 
+  changeRowGap: (newValue: number) => void;
+  changeColumnGap: (newValue: number) => void;
+
   columns: number;
   rows: number;
+  rowGap: number;
+  columnGap: number;
   gridItemsLength: number;
 }
 
@@ -26,19 +31,15 @@ const Toolbox: React.FC<IProps> = ({
   addGridItem,
   clearGridItems,
   gridItemsLength,
+  rowGap,
+  changeRowGap,
+  columnGap,
+  changeColumnGap,
 }: IProps): JSX.Element => {
   const addColumn = (): void => modifyColumn(ADD);
   const removeColumn = (): void => modifyColumn(REMOVE);
   const addRow = (): void => modifyRow(ADD);
   const removeRow = (): void => modifyRow(REMOVE);
-
-  const changeRowGap = (newValue: number): void => {
-    console.log('changeRowGap', newValue);
-  };
-
-  const changeColumnGap = (newValue: number): void => {
-    console.log('changeRowGap', newValue);
-  };
 
   return (
     <div className="Toolbox">
@@ -78,18 +79,18 @@ const Toolbox: React.FC<IProps> = ({
           Remove all items
         </button>
         <hr className="Toolbox_spacer" />
-        <span className="Toolbox_label">Set row gap</span>
+        <span className="Toolbox_label">Set row gap (px)</span>
         <NumberSpinner
           disableNext={false}
-          disablePrev={true}
-          value={1}
+          disablePrev={rowGap <= 0}
+          value={rowGap}
           onChange={changeRowGap}
         />
-        <span className="Toolbox_label">Set column gap</span>
+        <span className="Toolbox_label">Set column gap (px)</span>
         <NumberSpinner
           disableNext={false}
-          disablePrev={true}
-          value={0}
+          disablePrev={columnGap <= 0}
+          value={columnGap}
           onChange={changeColumnGap}
         />
       </div>
