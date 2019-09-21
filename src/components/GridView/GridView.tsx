@@ -2,13 +2,14 @@ import React, { ReactNode } from 'react';
 
 import './styles/index.scss';
 import { ICSSGridStyle } from '../../store/Grid/types';
+import { IGridItemDescriptor } from '../../store/GridItems/types';
 
 export interface IProps {
   columns: number;
   rows: number;
 
   gridStyle: ICSSGridStyle;
-  gridContent: string[];
+  gridContent: IGridItemDescriptor[];
 }
 
 const GridView: React.FC<IProps> = ({
@@ -23,9 +24,9 @@ const GridView: React.FC<IProps> = ({
         return (
           <div
             className="GridView_child"
-            key={childDescriptor}
-            style={{ backgroundColor: childDescriptor }}>
-            {childDescriptor}
+            key={childDescriptor.id}
+            style={{ backgroundColor: childDescriptor.color }}>
+            {childDescriptor.id}
           </div>
         );
       }
