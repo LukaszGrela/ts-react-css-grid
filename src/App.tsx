@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import './App.scss';
-import GridView from './components/GridView/GridView';
+import GridViewConnected from './components/GridView/GridViewConnected';
 import ToolboxConnected from './components/Toolbox/ToolboxConnected';
 import store from './store';
 
@@ -10,7 +10,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <header>CSS Grid editor</header>
       <main>
-        <GridView />
+        <GridViewConnected />
       </main>
       <menu>
         <ToolboxConnected />
