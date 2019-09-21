@@ -1,6 +1,14 @@
 .Toolbox {
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 1rem;
+
+  &_wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+  }
+
   &_button {
     color: $white;
 
@@ -15,7 +23,9 @@
       color: #444;
     }
   }
-
+  &_label {
+    margin-bottom: 0.2rem;
+  }
   &_spacer {
     color: white;
     margin: 1rem 0.25rem;
