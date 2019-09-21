@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import GridView, { IProps } from './GridView';
 import { AppState } from '../../store';
-import { stringToHashedColour } from '../../utils/stringToHashedColour';
 
 type TStateProps = Pick<
   IProps,
