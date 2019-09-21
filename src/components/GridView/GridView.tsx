@@ -5,6 +5,8 @@ import { ICSSGridStyle } from '../../store/Grid/types';
 import { IGridItemDescriptor } from '../../store/GridItems/types';
 
 export interface IProps {
+  className?: string;
+
   columns: number;
   rows: number;
 
@@ -13,12 +15,15 @@ export interface IProps {
 }
 
 const GridView: React.FC<IProps> = ({
+  className,
   columns,
   rows,
   gridStyle,
   gridContent,
 }: IProps): JSX.Element => (
-  <div className="GridView" style={{ ...gridStyle }}>
+  <div
+    className={`GridView${className ? ` GridView${className}` : ''}`}
+    style={{ ...gridStyle }}>
     {gridContent.map(
       (childDescriptor): ReactNode => {
         return (
