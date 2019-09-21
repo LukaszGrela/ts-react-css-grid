@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import './styles/index.scss';
 import { ICSSGridStyle } from '../../store/Grid/types';
@@ -8,18 +8,28 @@ export interface IProps {
   rows: number;
 
   gridStyle: ICSSGridStyle;
+  gridContent: string[];
 }
 
 const GridView: React.FC<IProps> = ({
   columns,
   rows,
   gridStyle,
+  gridContent,
 }: IProps): JSX.Element => (
   <div className="GridView" style={{ ...gridStyle }}>
-    <div className="GridView_child">1</div>
-    <div className="GridView_child">2</div>
-    <div className="GridView_child">3</div>
-    <div className="GridView_child">4</div>
+    {gridContent.map(
+      (childDescriptor): ReactNode => {
+        return (
+          <div
+            className="GridView_child"
+            key={childDescriptor}
+            style={{ backgroundColor: childDescriptor }}>
+            {childDescriptor}
+          </div>
+        );
+      }
+    )}
   </div>
 );
 
