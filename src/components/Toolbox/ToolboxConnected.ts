@@ -13,17 +13,18 @@ import {
   addRow,
   removeRow,
 } from '../../store/Grid/actions';
+import { clearGridItems, addGridItem } from '../../store/GridItems/actions';
 
 type TStateProps = Pick<IToolboxProps, 'columns' | 'rows' | 'gridItemsLength'>;
 const mapStateToProps = (state: AppState): TStateProps => ({
   columns: state.grid.columns,
   rows: state.grid.rows,
-  gridItemsLength: 8,
+  gridItemsLength: (state.gridItems.items || []).length,
 });
 
 type TDispatchProps = Pick<
   IToolboxProps,
-  'modifyColumn' | 'modifyRow' | 'addGridItem'
+  'modifyColumn' | 'modifyRow' | 'addGridItem' | 'clearGridItems'
 >;
 const mapDispatchToProps = (dispatch: Dispatch): TDispatchProps => ({
   modifyColumn: (action: TAction): void => {
@@ -41,14 +42,10 @@ const mapDispatchToProps = (dispatch: Dispatch): TDispatchProps => ({
     }
   },
   addGridItem: () => {
-    dispatch({
-      type: 'grid/items/ADD',
-      color: '#123456',
-      top: 1,
-      left: 1,
-      right: 2,
-      bottom: 2,
-    });
+    dispatch(addGridItem());
+  },
+  clearGridItems: (): void => {
+    dispatch(clearGridItems());
   },
 });
 
