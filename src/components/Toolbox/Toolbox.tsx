@@ -10,6 +10,7 @@ export interface IProps {
   modifyColumn: (action: TAction) => void;
   modifyRow: (action: TAction) => void;
   addGridItem: () => void;
+  clearGridItems: () => void;
 
   columns: number;
   rows: number;
@@ -22,6 +23,7 @@ const Toolbox: React.FC<IProps> = ({
   columns,
   rows,
   addGridItem,
+  clearGridItems,
   gridItemsLength,
 }: IProps): JSX.Element => {
   const addColumn = (): void => modifyColumn(ADD);
@@ -54,9 +56,15 @@ const Toolbox: React.FC<IProps> = ({
       <hr className="Toolbox_spacer" />
       <button
         className="Toolbox_button"
-        disabled={columns * rows <= gridItemsLength}
+        disabled={columns * rows <= gridItemsLength && gridItemsLength !== 0}
         onClick={addGridItem}>
         Add grid item
+      </button>
+      <button
+        className="Toolbox_button"
+        disabled={gridItemsLength === 0}
+        onClick={clearGridItems}>
+        Remove all items
       </button>
     </div>
   );
