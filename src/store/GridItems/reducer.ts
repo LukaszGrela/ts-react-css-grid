@@ -5,35 +5,100 @@ import {
   GRID_ITEMS_ADD,
   IGridItemDescriptor,
   GRID_ITEMS_CLEAR,
+  START_DRAG_GRID_ITEM,
+  STOP_DRAG_GRID_ITEM,
 } from './types';
 import { randomString } from '../../utils/randomString';
 import { stringToHashedColour } from '../../utils/stringToHashedColour';
+import * as Array2dUtils from '../../utils/2d-array-utils';
+import {
+  TGridActions,
+  ADD_COLUMN,
+  REMOVE_COLUMN,
+  ADD_ROW,
+  REMOVE_ROW,
+} from '../Grid/types';
 
 const initialState: IGridItemsState = {
+  draggedItem: undefined,
   items: [],
+
+  columns: 10,
+  rows: 6,
+  grid: Array2dUtils.init(10, 6, '*'),
 };
 
-const generateItem = (): IGridItemDescriptor => {
+const generateItem = (coords: Array2dUtils.ICoords2D): IGridItemDescriptor => {
   const id = randomString();
   return {
     id,
     color: stringToHashedColour(id),
-    bottom: -1,
-    left: -1,
-    top: -1,
-    right: -1,
+    left: coords.x,
+    top: coords.y,
+    cols: 1,
+    rows: 1,
   };
 };
 
 const reducer = (
   state = initialState,
-  action: IModifyGridItemsAction & IRemoveGridItemAction
+  action: IModifyGridItemsAction &
+    IRemoveGridItemAction &
+    IRemoveGridItemAction &
+    TGridActions
 ): IGridItemsState => {
   switch (action.type) {
-    case GRID_ITEMS_ADD:
-      return { ...state, items: [...state.items, generateItem()] };
+    case GRID_ITEMS_ADD: {
+      const coords = Array2dUtils.findFirstEmpty(state.grid);
+      console.log('GRID_ITEMS_ADD', coords);
+      return {
+        ...state,
+        items: [...state.items, generateItem(coords)],
+        grid: Array2dUtils.set(state.grid, coords, '1'),
+      };
+    }
     case GRID_ITEMS_CLEAR:
-      return { ...state, items: [] };
+      return {
+        ...state,
+        items: [],
+        grid: Array2dUtils.init(state.columns, state.rows, '*'),
+      };
+
+    case START_DRAG_GRID_ITEM:
+      return { ...state, draggedItem: action.id };
+
+    case STOP_DRAG_GRID_ITEM:
+      return { ...state, draggedItem: undefined };
+
+    case ADD_COLUMN: {
+      return {
+        ...state,
+        columns: state.columns + 1,
+        grid: Array2dUtils.addColumn(state.grid),
+      };
+    }
+    case REMOVE_COLUMN: {
+      return {
+        ...state,
+        columns: Math.max(state.columns - 1, 0),
+        grid: Array2dUtils.removeColumn(state.grid),
+      };
+    }
+    case ADD_ROW: {
+      return {
+        ...state,
+        rows: state.rows + 1,
+        grid: Array2dUtils.addRow(state.grid),
+      };
+    }
+    case REMOVE_ROW: {
+      return {
+        ...state,
+        rows: Math.max(state.rows - 1, 0),
+        grid: Array2dUtils.removeRow(state.grid),
+      };
+    }
+
     default:
       return { ...state };
   }
