@@ -20,6 +20,16 @@ const App: React.FC = () => {
         <ToolboxConnected />
       </menu>
       <footer>Copyright (c) 2019 by GrelaDesign</footer>
+      <span
+        id="marker"
+        style={{
+          position: 'absolute',
+          width: '5px',
+          height: '5px',
+          left: '0px',
+          top: '0px',
+          backgroundColor: 'red',
+        }}></span>
     </Provider>
   );
 };
