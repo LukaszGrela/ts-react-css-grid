@@ -119,11 +119,24 @@ const reducer = (
       };
     }
     case REMOVE_COLUMN: {
-      return {
+      const updated = {
         ...state,
         columns: Math.max(state.columns - 1, 0),
         grid: Array2dUtils.removeColumn(state.grid),
       };
+      // scan and remove items out of bounds
+      updated.items = state.items.filter((descriptor): boolean => {
+        try {
+          Array2dUtils.get(updated.grid, {
+            x: descriptor.left - 1,
+            y: descriptor.top - 1,
+          });
+          return true;
+        } catch (error) {
+          return false;
+        }
+      });
+      return { ...updated };
     }
     case ADD_ROW: {
       return {
@@ -133,11 +146,24 @@ const reducer = (
       };
     }
     case REMOVE_ROW: {
-      return {
+      const updated = {
         ...state,
         rows: Math.max(state.rows - 1, 0),
         grid: Array2dUtils.removeRow(state.grid),
       };
+      // scan and remove items out of bounds
+      updated.items = state.items.filter((descriptor): boolean => {
+        try {
+          Array2dUtils.get(updated.grid, {
+            x: descriptor.left - 1,
+            y: descriptor.top - 1,
+          });
+          return true;
+        } catch (error) {
+          return false;
+        }
+      });
+      return { ...updated };
     }
 
     default:
