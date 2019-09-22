@@ -40,7 +40,7 @@ export const findFirstEmpty = (
 export const set = (
   source: string,
   coords: ICoords2D,
-  newValue: string
+  newValue?: string
 ): string => {
   const match: RegExpMatchArray | null = source.match(MATCH_SIZE_PFX);
   if (match === null) {
@@ -63,10 +63,8 @@ export const set = (
 
   const i = coords.x + width * coords.y;
 
-  return `[${width},${height},${values}]${array.substring(
-    0,
-    i
-  )}${newValue}${array.substring(i + 1)}`;
+  return `[${width},${height},${values}]${array.substring(0, i)}${newValue ||
+    values}${array.substring(i + 1)}`;
 };
 
 export const removeColumn = (source: string): string => {
