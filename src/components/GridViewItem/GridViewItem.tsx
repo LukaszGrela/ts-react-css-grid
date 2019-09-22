@@ -3,6 +3,17 @@ import { IGridItemDescriptor } from '../../store/GridItems/types';
 
 import './styles/index.scss';
 import ReactHammer, { ReactHammerProps } from 'react-hammerjs';
+import DragHandle, {
+  HANDLE_PAN,
+  HANDLE_TL,
+  HANDLE_TR,
+  HANDLE_BL,
+  HANDLE_BR,
+  HANDLE_TOP,
+  HANDLE_BOTTOM,
+  HANDLE_RIGHT,
+  HANDLE_LEFT,
+} from '../DragHandle/DragHandle';
 
 interface IState {
   dragging: boolean;
@@ -241,7 +252,73 @@ const GridViewItem: React.FC<IProps> = ({
                   : {}),
               }
         }>
-        <div className="GridViewItem_handles"></div>
+        <DragHandle
+          type={HANDLE_PAN}
+          // direction={Hammer.DIRECTION_ALL}
+          // className={'ResizableDiv_handle ResizableDiv_handle--pan'}
+          // onPan={this.onPan}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onPanStop}
+        />
+        <DragHandle
+          type={HANDLE_TL}
+          // direction={Hammer.DIRECTION_ALL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // className={'ResizableDiv_handle ResizableDiv_handle--tl'}
+        />
+        <DragHandle
+          type={HANDLE_TR}
+          // direction={Hammer.DIRECTION_ALL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // className={'ResizableDiv_handle ResizableDiv_handle--tr'}
+        />
+        <DragHandle
+          type={HANDLE_BL}
+          // direction={Hammer.DIRECTION_ALL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // className={'ResizableDiv_handle ResizableDiv_handle--bl'}
+        />
+        <DragHandle
+          type={HANDLE_BR}
+          // direction={Hammer.DIRECTION_ALL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // className={'ResizableDiv_handle ResizableDiv_handle--br'}
+        />
+
+        <DragHandle
+          type={HANDLE_TOP}
+          // direction={Hammer.DIRECTION_VERTICAL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // className={'ResizableDiv_handle ResizableDiv_handle--top'}
+        />
+        <DragHandle
+          type={HANDLE_BOTTOM}
+          // direction={Hammer.DIRECTION_VERTICAL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // className={'ResizableDiv_handle ResizableDiv_handle--bottom'}
+        />
+
+        <DragHandle
+          type={HANDLE_RIGHT}
+          // direction={Hammer.DIRECTION_HORIZONTAL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // onPan={this.onResize}
+          // className={'ResizableDiv_handle ResizableDiv_handle--right'}
+        />
+        <DragHandle
+          type={HANDLE_LEFT}
+          // direction={Hammer.DIRECTION_HORIZONTAL}
+          // onPanStart={this.onPanStart}
+          // onPanStop={this.onResizeStop}
+          // className={'ResizableDiv_handle ResizableDiv_handle--left'}
+        />
         {childDescriptor.id}
       </div>
     </Wrapper>

@@ -29,6 +29,7 @@ const App: React.FC = () => {
           left: '0px',
           top: '0px',
           backgroundColor: 'red',
+          pointerEvents: 'none',
         }}></span>
     </Provider>
   );
