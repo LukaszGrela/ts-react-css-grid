@@ -157,8 +157,8 @@ const GridViewItem: React.FC<IProps> = ({
           onStartDrag(childDescriptor.id);
           onUpdateDrag(
             childDescriptor.id,
-            center.x /*  - target.offsetLeft  */ - offsetX,
-            center.y /*  - target.offsetTop  */ - offsetY,
+            center.x /*  - target.offsetLeft - offsetX*/,
+            center.y /*  - target.offsetTop - offsetY*/,
             target
           );
         },
@@ -172,15 +172,15 @@ const GridViewItem: React.FC<IProps> = ({
           );
           onUpdateDrag(
             childDescriptor.id,
-            center.x /*  - target.offsetLeft  */ - state.offsetX,
-            center.y /*  - target.offsetTop  */ - state.offsetY,
+            center.x /*  - target.offsetLeft - state.offsetX */,
+            center.y /*  - target.offsetTop - state.offsetY */,
             target
           );
           dispatch(resetDragging());
           onStopDrag(
             childDescriptor.id,
-            center.x /* - target.offsetLeft */ - state.offsetX,
-            center.y /*  - target.offsetTop  */ - state.offsetY,
+            center.x /* - target.offsetLeft - state.offsetX */,
+            center.y /*  - target.offsetTop  - state.offsetY */,
             target
           );
         },
@@ -216,12 +216,8 @@ const GridViewItem: React.FC<IProps> = ({
                 backgroundColor: childDescriptor.color,
                 ...(childDescriptor.left > 0
                   ? {
-                      gridColumn: `${childDescriptor.left + 1} / span ${
-                        childDescriptor.cols
-                      }`,
-                      gridRow: `${childDescriptor.top + 1} / span ${
-                        childDescriptor.rows
-                      }`,
+                      gridColumn: `${childDescriptor.left} / span ${childDescriptor.cols}`,
+                      gridRow: `${childDescriptor.top} / span ${childDescriptor.rows}`,
                     }
                   : {}),
                 ...(state.translateY === undefined ||
@@ -234,12 +230,8 @@ const GridViewItem: React.FC<IProps> = ({
             : {
                 ...(childDescriptor.left > 0
                   ? {
-                      gridColumn: `${childDescriptor.left + 1} / span ${
-                        childDescriptor.cols
-                      }`,
-                      gridRow: `${childDescriptor.top + 1} / span ${
-                        childDescriptor.rows
-                      }`,
+                      gridColumn: `${childDescriptor.left} / span ${childDescriptor.cols}`,
+                      gridRow: `${childDescriptor.top} / span ${childDescriptor.rows}`,
                     }
                   : {}),
               }
