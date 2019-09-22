@@ -72,6 +72,14 @@ const reducer = (
       return { ...state, draggedItem: undefined };
 
     case GRID_ITEMS_REPOSITION: {
+      if (
+        Array2dUtils.get(state.grid, { x: action.x - 1, y: action.y - 1 }) ===
+        '1'
+      ) {
+        // can't place here
+        return { ...state };
+      }
+
       let oldPos: Array2dUtils.ICoords2D | undefined;
       // update an item
       const updated = {
