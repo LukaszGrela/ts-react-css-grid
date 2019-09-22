@@ -1,3 +1,6 @@
+/**
+ * Implement 2D array with a use 1d string
+ */
 const MATCH_SIZE_PFX = /^\[(\d+),(\d+)(,([^\]]+))?\]/;
 
 export const init = (
@@ -65,6 +68,29 @@ export const set = (
 
   return `[${width},${height},${values}]${array.substring(0, i)}${newValue ||
     values}${array.substring(i + 1)}`;
+};
+
+export const get = (source: string, coords: ICoords2D): string => {
+  const match: RegExpMatchArray | null = source.match(MATCH_SIZE_PFX);
+  if (match === null) {
+    throw new Error('Invalid Argument. Missing size prefix.');
+  }
+
+  const width = parseInt(match[1], 10);
+  let height = parseInt(match[2], 10);
+
+  if (coords.x < 0 || coords.x > width - 1) {
+    throw new Error('Out of Bounds.');
+  }
+
+  if (coords.y < 0 || coords.y > height - 1) {
+    throw new Error('Out of Bounds.');
+  }
+
+  let array = source.substr(match[0].length);
+  const i = coords.x + width * coords.y;
+
+  return array.charAt(i);
 };
 
 export const removeColumn = (source: string): string => {
@@ -154,43 +180,43 @@ export const addRow = (source: string): string => {
   return `[${width},${height + 1},${values}]${array}`;
 };
 
-let test = init(3, 4, 'x');
-console.log(test);
-test = '[4,4,*]0123456789abcdef';
-console.log(test);
-console.log('removeColumn');
-test = removeColumn(test);
-console.log(test);
-test = removeColumn(test);
-console.log(test);
-test = removeColumn(test);
-console.log(test);
-test = removeColumn(test);
-console.log(test);
-test = removeColumn(test);
-console.log(test);
-console.log('addRow');
-test = addRow(test);
-console.log(test);
-test = addRow(test);
-console.log(test);
-test = addRow(test);
-console.log(test);
-console.log('change default value');
-test = test.replace(
-  MATCH_SIZE_PFX,
-  ($0, $1, $2, $3, $4): string => `[${$1},${$2},x]`
-);
-console.log(test);
-console.log('addColumn');
-test = addColumn(test);
-console.log(test);
-test = addColumn(test);
-console.log(test);
-test = addColumn(test);
-console.log(test);
+// let test = init(3, 4, 'x');
+// console.log(test);
+// test = '[4,4,*]0123456789abcdef';
+// console.log(test);
+// console.log('removeColumn');
+// test = removeColumn(test);
+// console.log(test);
+// test = removeColumn(test);
+// console.log(test);
+// test = removeColumn(test);
+// console.log(test);
+// test = removeColumn(test);
+// console.log(test);
+// test = removeColumn(test);
+// console.log(test);
+// console.log('addRow');
+// test = addRow(test);
+// console.log(test);
+// test = addRow(test);
+// console.log(test);
+// test = addRow(test);
+// console.log(test);
+// console.log('change default value');
+// test = test.replace(
+//   MATCH_SIZE_PFX,
+//   ($0, $1, $2, $3, $4): string => `[${$1},${$2},x]`
+// );
+// console.log(test);
+// console.log('addColumn');
+// test = addColumn(test);
+// console.log(test);
+// test = addColumn(test);
+// console.log(test);
+// test = addColumn(test);
+// console.log(test);
 
-console.log('removeRow');
+// console.log('removeRow');
 // test = removeRow(test)
 // console.log(test)
 // test = removeRow(test)
