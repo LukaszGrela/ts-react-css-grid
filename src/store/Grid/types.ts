@@ -21,7 +21,7 @@ export interface IChangeGridGap extends AnyAction {
   value: number;
 }
 
-export type IGridActions = IModifyGridAction & IChangeGridGap;
+export type TGridActions = IModifyGridAction & IChangeGridGap;
 
 export interface ICSSGridStyle {
   gridTemplateColumns?: string;

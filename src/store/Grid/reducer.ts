@@ -6,20 +6,10 @@ import {
   ADD_ROW,
   REMOVE_ROW,
   ICSSGridStyle,
-  IGridActions,
+  TGridActions,
   SET_COLUMN_GAP,
   SET_ROW_GAP,
 } from './types';
-
-const initialState: IGridState = {
-  columns: 1,
-  rows: 1,
-
-  columnGap: 0,
-  rowGap: 0,
-
-  style: {},
-};
 
 const updateStyle = (state: IGridState): ICSSGridStyle => {
   return {
@@ -30,23 +20,46 @@ const updateStyle = (state: IGridState): ICSSGridStyle => {
   };
 };
 
-const reducer = (state = initialState, action: IGridActions): IGridState => {
+const initialState: IGridState = {
+  columns: 10,
+  rows: 6,
+
+  columnGap: 0,
+  rowGap: 0,
+
+  style: {},
+};
+initialState.style = { ...updateStyle(initialState) };
+
+const reducer = (state = initialState, action: TGridActions): IGridState => {
   switch (action.type) {
     case ADD_COLUMN: {
       const update = { ...state, columns: state.columns + 1 };
-      return { ...update, style: { ...updateStyle(update) } };
+      return {
+        ...update,
+        style: { ...updateStyle(update) },
+      };
     }
     case REMOVE_COLUMN: {
       const update = { ...state, columns: Math.max(state.columns - 1, 0) };
-      return { ...update, style: { ...updateStyle(update) } };
+      return {
+        ...update,
+        style: { ...updateStyle(update) },
+      };
     }
     case ADD_ROW: {
       const update = { ...state, rows: state.rows + 1 };
-      return { ...update, style: { ...updateStyle(update) } };
+      return {
+        ...update,
+        style: { ...updateStyle(update) },
+      };
     }
     case REMOVE_ROW: {
       const update = { ...state, rows: Math.max(state.rows - 1, 0) };
-      return { ...update, style: { ...updateStyle(update) } };
+      return {
+        ...update,
+        style: { ...updateStyle(update) },
+      };
     }
 
     case SET_COLUMN_GAP: {
