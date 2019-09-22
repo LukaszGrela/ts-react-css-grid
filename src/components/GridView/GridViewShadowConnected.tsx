@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import GridView, { IProps } from './GridView';
 import { AppState } from '../../store';
 
@@ -12,10 +13,21 @@ const mapStateToProps = (state: AppState): TStateProps => ({
   gridStyle: state.grid.style,
 
   gridContent: state.gridItems.items.filter((item): boolean => {
-    return true;
+    return item.id === state.gridItems.draggedItem;
   }),
 
   className: '_shadow',
 });
-
-export default connect(mapStateToProps)(GridView);
+type TDispatchProps = Pick<
+  IProps,
+  'onStartDrag' | 'onUpdateDrag' | 'onStopDrag'
+>;
+const mapDispatchToProps = (dispatch: Dispatch): TDispatchProps => ({
+  onStartDrag: (id: string): void => {},
+  onUpdateDrag: (id: string, x: number, y: number): void => {},
+  onStopDrag: (id: string): void => {},
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GridView);
