@@ -2,13 +2,4 @@
   display: grid;
   width: 100%;
   height: 100%;
-
-  &_child {
-    width: 100%;
-    height: 100%;
-  }
-
-  &_shadow .GridView_child {
-    background-color: #888 !important;
-  }
 }

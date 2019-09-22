@@ -3,23 +3,48 @@ import React, { ReactNode } from 'react';
 import './styles/index.scss';
 import { ICSSGridStyle } from '../../store/Grid/types';
 import { IGridItemDescriptor } from '../../store/GridItems/types';
+import GridViewItem from '../GridViewItem/GridViewItem';
 
 export interface IProps {
   className?: string;
+
+  enableDragging?: boolean;
 
   columns: number;
   rows: number;
 
   gridStyle: ICSSGridStyle;
   gridContent: IGridItemDescriptor[];
+
+  onStartDrag: (id: string) => void;
+  onUpdateDrag: (
+    id: string,
+    x: number,
+    y: number,
+    columns: number,
+    rows: number,
+    target: HTMLElement
+  ) => void;
+  onStopDrag: (
+    id: string,
+    x?: number,
+    y?: number,
+    columns?: number,
+    rows?: number,
+    target?: HTMLElement
+  ) => void;
 }
 
 const GridView: React.FC<IProps> = ({
   className,
+  enableDragging,
   columns,
   rows,
   gridStyle,
   gridContent,
+  onStartDrag,
+  onUpdateDrag,
+  onStopDrag,
 }: IProps): JSX.Element => (
   <div
     className={`GridView${className ? ` GridView${className}` : ''}`}
@@ -27,12 +52,28 @@ const GridView: React.FC<IProps> = ({
     {gridContent.map(
       (childDescriptor): ReactNode => {
         return (
-          <div
-            className="GridView_child"
+          <GridViewItem
             key={childDescriptor.id}
-            style={{ backgroundColor: childDescriptor.color }}>
-            {childDescriptor.id}
-          </div>
+            childDescriptor={childDescriptor}
+            draggable={enableDragging === true}
+            onStartDrag={onStartDrag}
+            onUpdateDrag={(
+              id: string,
+              x: number,
+              y: number,
+              target: HTMLElement
+            ) => {
+              onUpdateDrag(id, x, y, columns, rows, target);
+            }}
+            onStopDrag={(
+              id: string,
+              x?: number,
+              y?: number,
+              target?: HTMLElement
+            ) => {
+              onStopDrag(id, x, y, columns, rows, target);
+            }}
+          />
         );
       }
     )}
