@@ -241,6 +241,7 @@ const GridViewItem: React.FC<IProps> = ({
                   : {}),
               }
         }>
+        <div className="GridViewItem_handles"></div>
         {childDescriptor.id}
       </div>
     </Wrapper>
