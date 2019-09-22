@@ -56,7 +56,10 @@ const resetDragging = (): IStateAction => ({
   type: RESET,
 });
 
-const dragging = (translateX: number, translateY: number): IStateAction => ({
+const updateDragging = (
+  translateX: number,
+  translateY: number
+): IStateAction => ({
   type: DRAGGING,
   translateX,
   translateY,
@@ -191,7 +194,7 @@ const GridViewItem: React.FC<IProps> = ({
         onPan: (event: HammerInput) => {
           const { target, center } = event;
           dispatch(
-            dragging(
+            updateDragging(
               center.x - target.offsetLeft - state.offsetX,
               center.y - target.offsetTop - state.offsetY
             )
@@ -208,7 +211,9 @@ const GridViewItem: React.FC<IProps> = ({
   return (
     <Wrapper {...(props || {})}>
       <div
-        className={`GridViewItem${dragging ? ' GridViewItem--dragged' : ''}`}
+        className={`GridViewItem${draggable ? ' GridViewItem--draggable' : ''}${
+          state.dragging ? ' GridViewItem--dragged' : ''
+        }`}
         key={childDescriptor.id}
         style={
           draggable

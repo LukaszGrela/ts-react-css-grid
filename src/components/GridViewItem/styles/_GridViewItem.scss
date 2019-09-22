@@ -4,4 +4,19 @@
 
   // disabled
   background-color: #888;
+  cursor: pointer;
+
+  &--draggable {
+    cursor: move;
+    cursor: grab;
+  }
+
+  // // animation
+  // animation-direction: reverse;
+  // transition: 0.3s cubic-bezier(.39,.58,.57,1);
+  &--dragged {
+    cursor: grabbing;
+    // animation - off
+    transition: none;
+  }
 }
