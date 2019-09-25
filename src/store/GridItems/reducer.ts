@@ -54,7 +54,7 @@ const reducer = (
 ): IGridItemsState => {
   switch (action.type) {
     case GRID_ITEMS_ADD: {
-      const coords = Array2dUtils.findFirstEmpty(state.grid);
+      const coords = Array2dUtils.findFirst(state.grid);
       console.log('GRID_ITEMS_ADD', coords);
       return {
         ...state,
