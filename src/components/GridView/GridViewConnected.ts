@@ -7,10 +7,12 @@ import {
   dragItemStop,
   repositionGridItem,
   dragItemUpdate,
+  resizeGridItem,
 } from '../../store/GridItems/actions';
 
 import { throttle } from 'lodash';
 import { ICoords2D } from '../../utils/2d-array-utils';
+import { IGridItemDescriptor } from '../../store/GridItems/types';
 
 const clamp = (val: number, min: number, max: number) =>
   Math.max(min, Math.min(val, max));
@@ -30,7 +32,7 @@ const mapStateToProps = (state: AppState): TStateProps => ({
 });
 type TDispatchProps = Pick<
   IProps,
-  'onStartDrag' | 'onUpdateDrag' | 'onStopDrag'
+  'onStartDrag' | 'onUpdateDrag' | 'onStopDrag' | 'onResize'
 >;
 const convertToGridCoords = (
   x: number,
@@ -132,6 +134,24 @@ const mapDispatchToProps = (dispatch: Dispatch): TDispatchProps => ({
     if (marker) {
       marker.style.top = `${0}px`;
       marker.style.left = `${0}px`;
+    }
+  },
+  onResize: (
+    childDescriptor: IGridItemDescriptor,
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number,
+    target?: HTMLElement | null
+  ): void => {
+    if (
+      x !== undefined &&
+      y !== undefined &&
+      width !== undefined &&
+      height !== undefined &&
+      (childDescriptor.cols !== width || childDescriptor.rows !== height)
+    ) {
+      dispatch(resizeGridItem(childDescriptor.id, x, y, width, height));
     }
   },
 });
