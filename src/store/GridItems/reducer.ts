@@ -8,6 +8,9 @@ import {
   START_DRAG_GRID_ITEM,
   STOP_DRAG_GRID_ITEM,
   GRID_ITEMS_REPOSITION,
+  IRepositionGridItem,
+  IResizeGridItem,
+  GRID_ITEMS_RESIZE,
 } from './types';
 import { randomString } from '../../utils/randomString';
 import { stringToHashedColour } from '../../utils/stringToHashedColour';
@@ -45,7 +48,8 @@ const reducer = (
   state = initialState,
   action: IModifyGridItemsAction &
     IRemoveGridItemAction &
-    IRemoveGridItemAction &
+    IRepositionGridItem &
+    IResizeGridItem &
     TGridActions
 ): IGridItemsState => {
   switch (action.type) {
@@ -71,6 +75,49 @@ const reducer = (
     case STOP_DRAG_GRID_ITEM:
       return { ...state, draggedItem: undefined };
 
+    case GRID_ITEMS_RESIZE: {
+      const match: IGridItemDescriptor | undefined = state.items.find(
+        (item): boolean => item.id === action.id
+      );
+      const updated = {
+        ...state,
+      };
+      if (match) {
+        let oldDescriptor = {
+          ...match,
+        };
+        // clear
+        updated.grid = Array2dUtils.setBox(
+          state.grid,
+          oldDescriptor.left - 1,
+          oldDescriptor.top - 1,
+          oldDescriptor.cols,
+          oldDescriptor.rows
+        );
+        // update descriptor
+        updated.items = state.items.map(
+          (descriptor): IGridItemDescriptor => {
+            if (descriptor.id === action.id) {
+              descriptor.left = action.x;
+              descriptor.top = action.y;
+              descriptor.cols = action.cols;
+              descriptor.rows = action.rows;
+            }
+            return descriptor;
+          }
+        );
+        // mark
+        updated.grid = Array2dUtils.setBox(
+          updated.grid,
+          action.x - 1,
+          action.y - 1,
+          action.cols,
+          action.rows,
+          '1'
+        );
+      }
+      return updated;
+    }
     case GRID_ITEMS_REPOSITION: {
       if (
         Array2dUtils.get(state.grid, { x: action.x - 1, y: action.y - 1 }) ===
@@ -79,44 +126,47 @@ const reducer = (
         // can't place here
         return { ...state };
       }
-
-      let oldPos: Array2dUtils.ICoords2D | undefined;
-      // update an item
+      const match: IGridItemDescriptor | undefined = state.items.find(
+        (item): boolean => item.id === action.id
+      );
       const updated = {
         ...state,
-        items: state.items.map(
+      };
+      if (match) {
+        let oldDescriptor = {
+          ...match,
+        };
+        // clear
+        updated.grid = Array2dUtils.setBox(
+          state.grid,
+          oldDescriptor.left - 1,
+          oldDescriptor.top - 1,
+          oldDescriptor.cols,
+          oldDescriptor.rows
+        );
+        // update an item
+        updated.items = state.items.map(
           (descriptor): IGridItemDescriptor => {
             if (descriptor.id === action.id) {
-              oldPos = {
-                x: descriptor.left,
-                y: descriptor.top,
-              };
               descriptor.left = action.x;
               descriptor.top = action.y;
             }
             return descriptor;
           }
-        ),
-      };
-      if (oldPos) {
-        // clear an item
-        try {
-          updated.grid = Array2dUtils.set(updated.grid, {
-            x: oldPos.x - 1,
-            y: oldPos.y - 1,
-          });
-        } catch (error) {}
-      }
-      // mark an item
-      updated.grid = Array2dUtils.set(
-        updated.grid,
-        { x: action.x - 1, y: action.y - 1 },
-        '1'
-      );
+        );
 
-      return {
-        ...updated,
-      };
+        // mark
+        updated.grid = Array2dUtils.setBox(
+          updated.grid,
+          action.x - 1,
+          action.y - 1,
+          oldDescriptor.cols,
+          oldDescriptor.rows,
+          '1'
+        );
+      }
+
+      return updated;
     }
 
     case ADD_COLUMN: {
