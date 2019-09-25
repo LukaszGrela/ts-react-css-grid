@@ -3,6 +3,19 @@
  */
 const MATCH_SIZE_PFX = /^\[(\d+),(\d+)(,([^\]]+))?\]/;
 
+const initValues = (
+  width: number,
+  height: number,
+  values: string = '0'
+): string => {
+  const defaultValue = values || ' ';
+  if (defaultValue.indexOf(']') !== -1) {
+    throw new Error("Invalid Argument. Array can't be initialised with ']'");
+  }
+  console.log('initValues', width, height, defaultValue,Array.from(Array(width * height), () => defaultValue).join(''));
+  return Array.from(Array(width * height), () => defaultValue).join('');
+};
+
 export const init = (
   width: number,
   height: number,
@@ -12,10 +25,11 @@ export const init = (
   if (defaultValue.indexOf(']') !== -1) {
     throw new Error("Invalid Argument. Array can't be initialised with ']'");
   }
-  return `[${width},${height},${defaultValue}]${Array.from(
-    Array(width * height),
-    () => defaultValue
-  ).join('')}`;
+  return `[${width},${height},${defaultValue}]${initValues(
+    width,
+    height,
+    defaultValue
+  )}`;
 };
 export interface ICoords2D {
   x: number;
@@ -68,6 +82,54 @@ export const set = (
 
   return `[${width},${height},${values}]${array.substring(0, i)}${newValue ||
     values}${array.substring(i + 1)}`;
+};
+
+export const setBox = (
+  source: string,
+  x: number,
+  y: number,
+  cols: number,
+  rows: number,
+  newValue?: string
+): string => {
+  console.log('Array2dUtils.setBox', `source=${source},\nx:${x}, y:${y}, cols:${cols}, rows:${rows},\n${newValue}`);
+  const match: RegExpMatchArray | null = source.match(MATCH_SIZE_PFX);
+  if (match === null) {
+    throw new Error('Invalid Argument. Missing size prefix.');
+  }
+
+  const width = parseInt(match[1], 10);
+  let height = parseInt(match[2], 10);
+
+  if (x < 0 || x > width - 1) {
+    throw new Error('Out of Bounds.');
+  }
+
+  if (y < 0 || y > height - 1) {
+    throw new Error('Out of Bounds.');
+  }
+
+  if (x + cols > width - 1) {
+    throw new Error('Out of Bounds.');
+  }
+  if (y + rows > height - 1) {
+    throw new Error('Out of Bounds.');
+  }
+
+  let array = source.substr(match[0].length);
+  const values = match[4] || ' ';
+
+  for (let r = y; r < y+rows; r++) {
+    const i = x + width * r;
+    console.log(r, i, cols);
+    array =
+      array.substring(0, i) +
+      initValues(cols, 1, newValue || values) +
+      array.substring(i + cols);
+  }
+  console.log(source.substr(match[0].length))
+  console.log(array)
+  return `[${width},${height},${values}]${array}`;
 };
 
 export const get = (source: string, coords: ICoords2D): string => {
