@@ -8,12 +8,17 @@ const initValues = (
   height: number,
   values: string = '0'
 ): string => {
-  const defaultValue = values || ' ';
-  if (defaultValue.indexOf(']') !== -1) {
+  if (values.indexOf(']') !== -1) {
     throw new Error("Invalid Argument. Array can't be initialised with ']'");
   }
-  console.log('initValues', width, height, defaultValue,Array.from(Array(width * height), () => defaultValue).join(''));
-  return Array.from(Array(width * height), () => defaultValue).join('');
+  // console.log(
+  //   'initValues',
+  //   width,
+  //   height,
+  //   values,
+  //   Array.from(Array(width * height), () => values).join('')
+  // );
+  return Array.from(Array(width * height), () => values).join('');
 };
 
 export const init = (
@@ -21,24 +26,19 @@ export const init = (
   height: number,
   values: string = '0'
 ): string => {
-  const defaultValue = values || ' ';
-  if (defaultValue.indexOf(']') !== -1) {
+  if (values.indexOf(']') !== -1) {
     throw new Error("Invalid Argument. Array can't be initialised with ']'");
   }
-  return `[${width},${height},${defaultValue}]${initValues(
-    width,
-    height,
-    defaultValue
-  )}`;
+  return `[${width},${height},${values}]${initValues(width, height, values)}`;
 };
 export interface ICoords2D {
   x: number;
   y: number;
 }
-export const findFirstEmpty = (
+export const findFirst = (
   source: string,
   defaultValue?: string
-): ICoords2D => {
+): ICoords2D | null => {
   const match: RegExpMatchArray | null = source.match(MATCH_SIZE_PFX);
   if (match === null) {
     throw new Error('Invalid Argument. Missing size prefix.');
@@ -46,12 +46,52 @@ export const findFirstEmpty = (
   let array = source.substr(match[0].length);
   const values = defaultValue || match[4] || ' ';
   const i = array.indexOf(values);
+  if (i === -1) {
+    return null;
+  }
   const width = parseInt(match[1], 10);
-  console.log('findFirstEmpty', source, values, i);
+  // console.log('findFirst', source, values, i);
   return {
     x: i % width,
     y: Math.floor(i / width),
   };
+};
+
+export const getSize = (source: string): ICoords2D => {
+  const match: RegExpMatchArray | null = source.match(MATCH_SIZE_PFX);
+  if (match === null) {
+    throw new Error('Invalid Argument. Missing size prefix.');
+  }
+
+  let width = parseInt(match[1], 10);
+  let height = parseInt(match[2], 10);
+
+  if (width <= 0) {
+    height = 0;
+  }
+  if (height <= 0) {
+    width = 0;
+  }
+
+  return { x: width, y: height };
+};
+
+export const contains = (
+  source: string,
+  x: number,
+  y: number,
+  cols: number,
+  rows: number
+): boolean => {
+  const size: ICoords2D = getSize(source);
+
+  if (x < 0) return false;
+  if (y < 0) return false;
+  if (cols === 0 || rows === 0) return false;
+  if (y > size.y - 1 || y + rows > size.y) return false;
+  if (x > size.x - 1 || x + cols > size.x) return false;
+
+  return true;
 };
 
 export const set = (
@@ -92,7 +132,10 @@ export const setBox = (
   rows: number,
   newValue?: string
 ): string => {
-  console.log('Array2dUtils.setBox', `source=${source},\nx:${x}, y:${y}, cols:${cols}, rows:${rows},\n${newValue}`);
+  // console.log(
+  //   'Array2dUtils.setBox\n',
+  //   `source=${source},\nx:${x}, y:${y}, cols:${cols}, rows:${rows},\n${newValue}`
+  // );
   const match: RegExpMatchArray | null = source.match(MATCH_SIZE_PFX);
   if (match === null) {
     throw new Error('Invalid Argument. Missing size prefix.');
@@ -109,26 +152,26 @@ export const setBox = (
     throw new Error('Out of Bounds.');
   }
 
-  if (x + cols > width - 1) {
+  if (x + cols > width) {
     throw new Error('Out of Bounds.');
   }
-  if (y + rows > height - 1) {
+  if (y + rows > height) {
     throw new Error('Out of Bounds.');
   }
 
   let array = source.substr(match[0].length);
   const values = match[4] || ' ';
 
-  for (let r = y; r < y+rows; r++) {
+  for (let r = y; r < y + rows; r++) {
     const i = x + width * r;
-    console.log(r, i, cols);
+    // console.log(r, i, cols);
     array =
       array.substring(0, i) +
       initValues(cols, 1, newValue || values) +
       array.substring(i + cols);
   }
-  console.log(source.substr(match[0].length))
-  console.log(array)
+  // console.log(source.substr(match[0].length));
+  // console.log(array);
   return `[${width},${height},${values}]${array}`;
 };
 
@@ -237,55 +280,7 @@ export const addRow = (source: string): string => {
     width = 1;
   }
 
-  array = array + Array.from(Array(width), () => values).join('');
+  array = array + initValues(width, 1, values);
 
   return `[${width},${height + 1},${values}]${array}`;
 };
-
-// let test = init(3, 4, 'x');
-// console.log(test);
-// test = '[4,4,*]0123456789abcdef';
-// console.log(test);
-// console.log('removeColumn');
-// test = removeColumn(test);
-// console.log(test);
-// test = removeColumn(test);
-// console.log(test);
-// test = removeColumn(test);
-// console.log(test);
-// test = removeColumn(test);
-// console.log(test);
-// test = removeColumn(test);
-// console.log(test);
-// console.log('addRow');
-// test = addRow(test);
-// console.log(test);
-// test = addRow(test);
-// console.log(test);
-// test = addRow(test);
-// console.log(test);
-// console.log('change default value');
-// test = test.replace(
-//   MATCH_SIZE_PFX,
-//   ($0, $1, $2, $3, $4): string => `[${$1},${$2},x]`
-// );
-// console.log(test);
-// console.log('addColumn');
-// test = addColumn(test);
-// console.log(test);
-// test = addColumn(test);
-// console.log(test);
-// test = addColumn(test);
-// console.log(test);
-
-// console.log('removeRow');
-// test = removeRow(test)
-// console.log(test)
-// test = removeRow(test)
-// console.log(test)
-// test = removeRow(test)
-// console.log(test)
-// test = removeRow(test)
-// console.log(test)
-// test = removeRow(test)
-// console.log(test)
