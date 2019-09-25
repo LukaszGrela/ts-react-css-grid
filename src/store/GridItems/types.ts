@@ -8,7 +8,8 @@ export const START_DRAG_GRID_ITEM = 'grid/item/drag/START';
 export const UPDATE_DRAG_GRID_ITEM = 'grid/item/drag/UPDATE';
 export const STOP_DRAG_GRID_ITEM = 'grid/item/drag/STOP';
 
-export const GRID_ITEMS_REPOSITION = 'grid/item/drag/REPOSITION';
+export const GRID_ITEMS_REPOSITION = 'grid/item/REPOSITION';
+export const GRID_ITEMS_RESIZE = 'grid/item/RESIZE';
 
 export interface IModifyGridItemsAction extends AnyAction {
   type:
@@ -18,6 +19,7 @@ export interface IModifyGridItemsAction extends AnyAction {
     | typeof START_DRAG_GRID_ITEM
     | typeof UPDATE_DRAG_GRID_ITEM
     | typeof GRID_ITEMS_REPOSITION
+    | typeof GRID_ITEMS_RESIZE
     | typeof STOP_DRAG_GRID_ITEM;
 }
 
@@ -27,14 +29,22 @@ export interface IRemoveGridItemAction extends IModifyGridItemsAction {
 
 export interface IDragGridItemAction extends IModifyGridItemsAction {
   id: string;
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
 }
 
 export interface IRepositionGridItem extends IModifyGridItemsAction {
   id: string;
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
+}
+
+export interface IResizeGridItem extends IModifyGridItemsAction {
+  id: string;
+  x: number;
+  y: number;
+  cols: number;
+  rows: number;
 }
 export interface IGridItemDescriptor {
   id: string;

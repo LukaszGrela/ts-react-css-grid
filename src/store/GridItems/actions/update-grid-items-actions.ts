@@ -6,6 +6,8 @@ import {
   GRID_ITEMS_REMOVE,
   IRepositionGridItem,
   GRID_ITEMS_REPOSITION,
+  GRID_ITEMS_RESIZE,
+  IResizeGridItem,
 } from '../types';
 
 export const addGridItem = (): IModifyGridItemsAction => ({
@@ -30,4 +32,19 @@ export const repositionGridItem = (
   id,
   x,
   y,
+});
+
+export const resizeGridItem = (
+  id: string,
+  x: number,
+  y: number,
+  cols: number,
+  rows: number
+): IResizeGridItem => ({
+  type: GRID_ITEMS_RESIZE,
+  id,
+  x,
+  y,
+  cols,
+  rows,
 });

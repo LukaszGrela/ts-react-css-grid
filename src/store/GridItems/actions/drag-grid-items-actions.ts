@@ -8,11 +8,15 @@ import {
 export const dragItemStart = (id: string): IDragGridItemAction => ({
   type: START_DRAG_GRID_ITEM,
   id,
+  x: -1,
+  y: -1,
 });
 
 export const dragItemStop = (id: string): IDragGridItemAction => ({
   type: STOP_DRAG_GRID_ITEM,
   id,
+  x: -1,
+  y: -1,
 });
 
 export const dragItemUpdate = (
