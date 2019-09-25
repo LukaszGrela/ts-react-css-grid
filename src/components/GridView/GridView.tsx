@@ -33,6 +33,14 @@ export interface IProps {
     rows?: number,
     target?: HTMLElement
   ) => void;
+  onResize: (
+    descriptor: IGridItemDescriptor,
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number,
+    target?: HTMLElement | null
+  ) => void;
 }
 
 const GridView: React.FC<IProps> = ({
@@ -45,6 +53,7 @@ const GridView: React.FC<IProps> = ({
   onStartDrag,
   onUpdateDrag,
   onStopDrag,
+  onResize,
 }: IProps): JSX.Element => (
   <div
     className={`GridView${className ? ` GridView${className}` : ''}`}
@@ -72,6 +81,17 @@ const GridView: React.FC<IProps> = ({
               target?: HTMLElement
             ) => {
               onStopDrag(id, x, y, columns, rows, target);
+            }}
+            onResize={(
+              descriptor: IGridItemDescriptor,
+              x?: number,
+              y?: number,
+              width?: number,
+              height?: number,
+              target?: HTMLElement | null
+            ): void => {
+              console.log(descriptor.id, x, y, width, height, target);
+              onResize(descriptor, x, y, width, height, target);
             }}
           />
         );
