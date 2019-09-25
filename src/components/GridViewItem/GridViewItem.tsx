@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import { IGridItemDescriptor } from '../../store/GridItems/types';
 
 import './styles/index.scss';
@@ -13,6 +13,7 @@ import DragHandle, {
   HANDLE_BOTTOM,
   HANDLE_RIGHT,
   HANDLE_LEFT,
+  TDirectionHandleType,
 } from '../DragHandle/DragHandle';
 
 interface IState {
@@ -21,17 +22,21 @@ interface IState {
   translateY?: number;
   offsetX: number;
   offsetY: number;
+
+  blocked: boolean;
 }
 const START_DRAGGING = 'START_DRAGGING';
 const STOP_DRAGGING = 'STOP_DRAGGING';
 const DRAGGING = 'DRAGGING';
 const RESET = 'RESET';
+const BLOCK_DRAGGING = 'BLOCK_DRAGGING';
 interface IStateAction {
   type:
     | typeof START_DRAGGING
     | typeof STOP_DRAGGING
     | typeof DRAGGING
-    | typeof RESET;
+    | typeof RESET
+    | typeof BLOCK_DRAGGING;
   translateX?: number;
   translateY?: number;
 }
@@ -66,6 +71,9 @@ const stopDragging = (
 const resetDragging = (): IStateAction => ({
   type: RESET,
 });
+const blockDragging = (): IStateAction => ({
+  type: BLOCK_DRAGGING,
+});
 
 const updateDragging = (
   translateX: number,
@@ -78,6 +86,7 @@ const updateDragging = (
 
 const initialState: IState = {
   dragging: false,
+  blocked: false,
   translateX: undefined,
   translateY: undefined,
   offsetX: 0,
@@ -111,6 +120,8 @@ const reducer = (
         translateX: action.translateX,
         translateY: action.translateY,
       };
+    case BLOCK_DRAGGING:
+      return { ...initialState, blocked: true };
     case RESET:
       return { ...initialState };
     default:
@@ -130,6 +141,14 @@ export interface IProps {
     y?: number,
     target?: HTMLElement
   ) => void;
+  onResize: (
+    childDescriptor: IGridItemDescriptor,
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number,
+    target?: HTMLElement | null
+  ) => void;
 }
 
 const GridViewItem: React.FC<IProps> = ({
@@ -139,8 +158,109 @@ const GridViewItem: React.FC<IProps> = ({
   onStartDrag,
   onUpdateDrag,
   onStopDrag,
+  onResize,
 }: IProps): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const updateResize = (
+    type: string,
+    childDescriptor: IGridItemDescriptor,
+    deltaX: number,
+    deltaY: number,
+    ow: number,
+    oh: number,
+    target: Element | null
+  ): void => {
+    let x = childDescriptor.left;
+    let y = childDescriptor.top;
+    let width = childDescriptor.cols;
+    let height = childDescriptor.rows;
+    let column = ow / childDescriptor.cols;
+    let row = oh / childDescriptor.rows;
+    let span: number;
+    switch (type) {
+      case HANDLE_RIGHT:
+        // use only x and offsetWidth and columns
+        if (deltaX > 0) {
+          // growing
+          span = Math.max(0, Math.floor((deltaX + column / 2) / column));
+          width += span;
+        } else {
+          // shrinking
+          span = Math.max(0, Math.floor((-1 * deltaX + column / 2) / column));
+          width = Math.max(1, width - span);
+        }
+        break;
+      case HANDLE_LEFT:
+        if (deltaX > 0) {
+          // shrinking
+          span = Math.max(0, Math.floor((deltaX + column / 2) / column));
+          if (width - span >= 1) {
+            x += span;
+            width -= span;
+          }
+        } else {
+          // growing
+          span = Math.max(0, Math.floor((-1 * deltaX + column / 2) / column));
+          if (x - span >= 1) {
+            x -= span;
+            width += span;
+          }
+        }
+
+        break;
+      default:
+        break;
+    }
+    //
+    onResize(childDescriptor, x, y, width, height, target as HTMLElement);
+  };
+
+  const handleDragHandleChange = (
+    type: TDirectionHandleType,
+    e: HammerInput
+  ): void => {
+    console.log('handleDragHandleChange');
+    const {
+      center: { x: cx, y: cy },
+      target: {
+        offsetLeft: ox,
+        offsetTop: oy,
+        offsetHeight,
+        offsetWidth,
+        offsetParent,
+      },
+      deltaX,
+      deltaY,
+    } = e;
+    const {
+      offsetHeight: oh,
+      offsetWidth: ow,
+    } = (offsetParent as HTMLElement) || {
+      offsetHeight: -1,
+      offsetWidth: -1,
+    };
+    if (e.type === 'panend' || e.type === 'pancancel') {
+      dispatch(resetDragging());
+      if (e.type === 'pancancel') {
+        onResize(childDescriptor);
+      } else {
+        updateResize(
+          type,
+          childDescriptor,
+          deltaX,
+          deltaY,
+          ow,
+          oh,
+          offsetParent
+        );
+      }
+    } else if (e.type === 'panstart') {
+      dispatch(blockDragging());
+    } else {
+      // updateResize(type, childDescriptor, deltaX, deltaY, ow, oh, offsetParent);
+    }
+  };
 
   const Wrapper = draggable ? ReactHammer : React.Fragment;
   const props: ReactHammerProps | undefined = draggable
@@ -154,6 +274,9 @@ const GridViewItem: React.FC<IProps> = ({
           },
         },
         onPanStart: (event: HammerInput) => {
+          if (state.blocked) {
+            return;
+          }
           const { target, center, deltaX, deltaY } = event;
 
           const offsetX = center.x - target.offsetLeft - deltaX;
@@ -177,6 +300,12 @@ const GridViewItem: React.FC<IProps> = ({
           );
         },
         onPanEnd: (event: HammerInput) => {
+          if (state.blocked) {
+            return;
+          }
+          if (!state.dragging) {
+            return;
+          }
           const { target, center } = event;
           dispatch(
             stopDragging(
@@ -199,10 +328,22 @@ const GridViewItem: React.FC<IProps> = ({
           );
         },
         onPanCancel: (event: HammerInput) => {
+          if (state.blocked) {
+            return;
+          }
+          if (!state.dragging) {
+            return;
+          }
           dispatch(stopDragging());
           onStopDrag(childDescriptor.id, -1, -1, undefined);
         },
         onPan: (event: HammerInput) => {
+          if (state.blocked) {
+            return;
+          }
+          if (!state.dragging) {
+            return;
+          }
           const { target, center } = event;
           dispatch(
             updateDragging(
@@ -224,7 +365,8 @@ const GridViewItem: React.FC<IProps> = ({
       <div
         className={`GridViewItem${draggable ? ' GridViewItem--draggable' : ''}${
           state.dragging ? ' GridViewItem--dragged' : ''
-        }`}
+        }
+        ${state.blocked ? ' GridViewItem--with-handle' : ''}`}
         key={childDescriptor.id}
         style={
           draggable
@@ -252,73 +394,17 @@ const GridViewItem: React.FC<IProps> = ({
                   : {}),
               }
         }>
-        <DragHandle
-          type={HANDLE_PAN}
-          // direction={Hammer.DIRECTION_ALL}
-          // className={'ResizableDiv_handle ResizableDiv_handle--pan'}
-          // onPan={this.onPan}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onPanStop}
-        />
-        <DragHandle
-          type={HANDLE_TL}
-          // direction={Hammer.DIRECTION_ALL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // className={'ResizableDiv_handle ResizableDiv_handle--tl'}
-        />
-        <DragHandle
-          type={HANDLE_TR}
-          // direction={Hammer.DIRECTION_ALL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // className={'ResizableDiv_handle ResizableDiv_handle--tr'}
-        />
-        <DragHandle
-          type={HANDLE_BL}
-          // direction={Hammer.DIRECTION_ALL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // className={'ResizableDiv_handle ResizableDiv_handle--bl'}
-        />
-        <DragHandle
-          type={HANDLE_BR}
-          // direction={Hammer.DIRECTION_ALL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // className={'ResizableDiv_handle ResizableDiv_handle--br'}
-        />
+        <DragHandle type={HANDLE_PAN} />
+        <DragHandle type={HANDLE_TL} onChange={handleDragHandleChange} />
+        <DragHandle type={HANDLE_TR} onChange={handleDragHandleChange} />
+        <DragHandle type={HANDLE_BL} onChange={handleDragHandleChange} />
+        <DragHandle type={HANDLE_BR} onChange={handleDragHandleChange} />
 
-        <DragHandle
-          type={HANDLE_TOP}
-          // direction={Hammer.DIRECTION_VERTICAL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // className={'ResizableDiv_handle ResizableDiv_handle--top'}
-        />
-        <DragHandle
-          type={HANDLE_BOTTOM}
-          // direction={Hammer.DIRECTION_VERTICAL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // className={'ResizableDiv_handle ResizableDiv_handle--bottom'}
-        />
+        <DragHandle type={HANDLE_TOP} onChange={handleDragHandleChange} />
+        <DragHandle type={HANDLE_BOTTOM} onChange={handleDragHandleChange} />
 
-        <DragHandle
-          type={HANDLE_RIGHT}
-          // direction={Hammer.DIRECTION_HORIZONTAL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // onPan={this.onResize}
-          // className={'ResizableDiv_handle ResizableDiv_handle--right'}
-        />
-        <DragHandle
-          type={HANDLE_LEFT}
-          // direction={Hammer.DIRECTION_HORIZONTAL}
-          // onPanStart={this.onPanStart}
-          // onPanStop={this.onResizeStop}
-          // className={'ResizableDiv_handle ResizableDiv_handle--left'}
-        />
+        <DragHandle type={HANDLE_RIGHT} onChange={handleDragHandleChange} />
+        <DragHandle type={HANDLE_LEFT} onChange={handleDragHandleChange} />
         {childDescriptor.id}
       </div>
     </Wrapper>

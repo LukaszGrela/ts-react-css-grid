@@ -24,6 +24,11 @@
     transition: none;
   }
 
+  &--with-handle .DragHandle {
+    // we are dragging handle
+    display: block;
+  }
+
   &:hover .DragHandle {
     display: block;
   }
