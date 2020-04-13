@@ -1,15 +1,15 @@
-import { AnyAction } from 'redux';
+import { AnyAction } from "redux";
 
-export const GRID_ITEMS_ADD = 'grid/items/ADD';
-export const GRID_ITEMS_CLEAR = 'grid/items/CLEAR';
-export const GRID_ITEMS_REMOVE = 'grid/items/REMOVE';
+export const GRID_ITEMS_ADD = "grid/items/ADD";
+export const GRID_ITEMS_CLEAR = "grid/items/CLEAR";
+export const GRID_ITEMS_REMOVE = "grid/items/REMOVE";
 
-export const START_DRAG_GRID_ITEM = 'grid/item/drag/START';
-export const UPDATE_DRAG_GRID_ITEM = 'grid/item/drag/UPDATE';
-export const STOP_DRAG_GRID_ITEM = 'grid/item/drag/STOP';
+export const START_DRAG_GRID_ITEM = "grid/item/drag/START";
+export const UPDATE_DRAG_GRID_ITEM = "grid/item/drag/UPDATE";
+export const STOP_DRAG_GRID_ITEM = "grid/item/drag/STOP";
 
-export const GRID_ITEMS_REPOSITION = 'grid/item/REPOSITION';
-export const GRID_ITEMS_RESIZE = 'grid/item/RESIZE';
+export const GRID_ITEMS_REPOSITION = "grid/item/REPOSITION";
+export const GRID_ITEMS_RESIZE = "grid/item/RESIZE";
 
 export interface IModifyGridItemsAction extends AnyAction {
   type:
@@ -46,6 +46,12 @@ export interface IResizeGridItem extends IModifyGridItemsAction {
   cols: number;
   rows: number;
 }
+
+export type TGridItemActions = IModifyGridItemsAction &
+  IRemoveGridItemAction &
+  IRepositionGridItem &
+  IResizeGridItem;
+
 export interface IGridItemDescriptor {
   id: string;
   color: string;

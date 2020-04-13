@@ -11,17 +11,17 @@ import {
   IRepositionGridItem,
   IResizeGridItem,
   GRID_ITEMS_RESIZE,
-} from './types';
-import { randomString } from '../../utils/randomString';
-import { stringToHashedColour } from '../../utils/stringToHashedColour';
-import * as Array2dUtils from '../../utils/2d-array-utils';
+} from "./types";
+import { randomString } from "../../utils/randomString";
+import { stringToHashedColour } from "../../utils/stringToHashedColour";
+import * as Array2dUtils from "../../utils/2d-array-utils";
 import {
   TGridActions,
   ADD_COLUMN,
   REMOVE_COLUMN,
   ADD_ROW,
   REMOVE_ROW,
-} from '../Grid/types';
+} from "../Grid/types";
 
 const initialState: IGridItemsState = {
   draggedItem: undefined,
@@ -29,7 +29,7 @@ const initialState: IGridItemsState = {
 
   columns: 10,
   rows: 6,
-  grid: Array2dUtils.init(10, 6, '*'),
+  grid: Array2dUtils.init(10, 6, "*"),
 };
 
 const generateItem = (coords: Array2dUtils.ICoords2D): IGridItemDescriptor => {
@@ -55,18 +55,21 @@ const reducer = (
   switch (action.type) {
     case GRID_ITEMS_ADD: {
       const coords = Array2dUtils.findFirst(state.grid);
-      console.log('GRID_ITEMS_ADD', coords);
+      console.log("GRID_ITEMS_ADD", coords);
+      if (!coords) {
+        return { ...state };
+      }
       return {
         ...state,
         items: [...state.items, generateItem(coords)],
-        grid: Array2dUtils.set(state.grid, coords, '1'),
+        grid: Array2dUtils.set(state.grid, coords, "1"),
       };
     }
     case GRID_ITEMS_CLEAR:
       return {
         ...state,
         items: [],
-        grid: Array2dUtils.init(state.columns, state.rows, '*'),
+        grid: Array2dUtils.init(state.columns, state.rows, "*"),
       };
 
     case START_DRAG_GRID_ITEM:
@@ -113,7 +116,7 @@ const reducer = (
           action.y - 1,
           action.cols,
           action.rows,
-          '1'
+          "1"
         );
       }
       return updated;
@@ -121,7 +124,7 @@ const reducer = (
     case GRID_ITEMS_REPOSITION: {
       if (
         Array2dUtils.get(state.grid, { x: action.x - 1, y: action.y - 1 }) ===
-        '1'
+        "1"
       ) {
         // can't place here
         return { ...state };
@@ -162,7 +165,7 @@ const reducer = (
           action.y - 1,
           oldDescriptor.cols,
           oldDescriptor.rows,
-          '1'
+          "1"
         );
       }
 
