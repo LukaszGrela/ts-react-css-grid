@@ -46,31 +46,43 @@ const generateItem = (coords: Array2dUtils.ICoords2D): IGridItemDescriptor => {
 
 const reducer = (
   state = initialState,
-  action: IModifyGridItemsAction &
-    IRemoveGridItemAction &
-    IRepositionGridItem &
-    IResizeGridItem &
-    TGridActions
+  action:
+    | IModifyGridItemsAction
+    | IRemoveGridItemAction
+    | IRepositionGridItem
+    | IResizeGridItem
+    | TGridActions
 ): IGridItemsState => {
   switch (action.type) {
     case GRID_ITEMS_ADD: {
-      const coords = Array2dUtils.findFirst(state.grid);
-      console.log("GRID_ITEMS_ADD", coords);
-      if (!coords) {
-        return { ...state };
+      try {
+        const coords = Array2dUtils.findFirst(state.grid);
+        console.log("GRID_ITEMS_ADD", coords);
+        if (!coords) {
+          return { ...state };
+        }
+        return {
+          ...state,
+          items: [...state.items, generateItem(coords)],
+          grid: Array2dUtils.set(state.grid, coords, "1"),
+        };
+      } catch (error) {
+        console.log(error, state);
+        return state;
       }
-      return {
-        ...state,
-        items: [...state.items, generateItem(coords)],
-        grid: Array2dUtils.set(state.grid, coords, "1"),
-      };
     }
-    case GRID_ITEMS_CLEAR:
-      return {
-        ...state,
-        items: [],
-        grid: Array2dUtils.init(state.columns, state.rows, "*"),
-      };
+    case GRID_ITEMS_CLEAR: {
+      try {
+        return {
+          ...state,
+          items: [],
+          grid: Array2dUtils.init(state.columns, state.rows, "*"),
+        };
+      } catch (error) {
+        console.log(error, state);
+        return state;
+      }
+    }
 
     case START_DRAG_GRID_ITEM:
       return { ...state, draggedItem: action.id };
@@ -79,111 +91,130 @@ const reducer = (
       return { ...state, draggedItem: undefined };
 
     case GRID_ITEMS_RESIZE: {
-      const match: IGridItemDescriptor | undefined = state.items.find(
-        (item): boolean => item.id === action.id
-      );
-      const updated = {
-        ...state,
-      };
-      if (match) {
-        let oldDescriptor = {
-          ...match,
+      try {
+        const match: IGridItemDescriptor | undefined = state.items.find(
+          (item): boolean => item.id === action.id
+        );
+        const updated = {
+          ...state,
         };
-        // clear
-        updated.grid = Array2dUtils.setBox(
-          state.grid,
-          oldDescriptor.left - 1,
-          oldDescriptor.top - 1,
-          oldDescriptor.cols,
-          oldDescriptor.rows
-        );
-        // update descriptor
-        updated.items = state.items.map(
-          (descriptor): IGridItemDescriptor => {
-            if (descriptor.id === action.id) {
-              descriptor.left = action.x;
-              descriptor.top = action.y;
-              descriptor.cols = action.cols;
-              descriptor.rows = action.rows;
+        if (match) {
+          let oldDescriptor = {
+            ...match,
+          };
+          // clear
+          updated.grid = Array2dUtils.setBox(
+            state.grid,
+            oldDescriptor.left - 1,
+            oldDescriptor.top - 1,
+            oldDescriptor.cols,
+            oldDescriptor.rows
+          );
+          // update descriptor
+          updated.items = state.items.map(
+            (descriptor): IGridItemDescriptor => {
+              if (descriptor.id === action.id) {
+                descriptor.left = action.x;
+                descriptor.top = action.y;
+                descriptor.cols = action.cols;
+                descriptor.rows = action.rows;
+              }
+              return descriptor;
             }
-            return descriptor;
-          }
-        );
-        // mark
-        updated.grid = Array2dUtils.setBox(
-          updated.grid,
-          action.x - 1,
-          action.y - 1,
-          action.cols,
-          action.rows,
-          "1"
-        );
+          );
+          // mark
+          updated.grid = Array2dUtils.setBox(
+            updated.grid,
+            action.x - 1,
+            action.y - 1,
+            action.cols,
+            action.rows,
+            "1"
+          );
+        }
+        return updated;
+      } catch (error) {
+        console.log(error, state);
+        return state;
       }
-      return updated;
     }
     case GRID_ITEMS_REPOSITION: {
-      if (
-        Array2dUtils.get(state.grid, { x: action.x - 1, y: action.y - 1 }) ===
-        "1"
-      ) {
-        // can't place here
-        return { ...state };
-      }
-      const match: IGridItemDescriptor | undefined = state.items.find(
-        (item): boolean => item.id === action.id
-      );
-      const updated = {
-        ...state,
-      };
-      if (match) {
-        let oldDescriptor = {
-          ...match,
-        };
-        // clear
-        updated.grid = Array2dUtils.setBox(
-          state.grid,
-          oldDescriptor.left - 1,
-          oldDescriptor.top - 1,
-          oldDescriptor.cols,
-          oldDescriptor.rows
-        );
-        // update an item
-        updated.items = state.items.map(
-          (descriptor): IGridItemDescriptor => {
-            if (descriptor.id === action.id) {
-              descriptor.left = action.x;
-              descriptor.top = action.y;
-            }
-            return descriptor;
-          }
-        );
-
-        // mark
-        updated.grid = Array2dUtils.setBox(
-          updated.grid,
-          action.x - 1,
-          action.y - 1,
-          oldDescriptor.cols,
-          oldDescriptor.rows,
+      try {
+        if (
+          Array2dUtils.get(state.grid, { x: action.x - 1, y: action.y - 1 }) ===
           "1"
+        ) {
+          // can't place here
+          return { ...state };
+        }
+        const match: IGridItemDescriptor | undefined = state.items.find(
+          (item): boolean => item.id === action.id
         );
-      }
+        const updated = {
+          ...state,
+        };
+        if (match) {
+          let oldDescriptor = {
+            ...match,
+          };
+          // clear
+          updated.grid = Array2dUtils.setBox(
+            state.grid,
+            oldDescriptor.left - 1,
+            oldDescriptor.top - 1,
+            oldDescriptor.cols,
+            oldDescriptor.rows
+          );
+          // update an item
+          updated.items = state.items.map(
+            (descriptor): IGridItemDescriptor => {
+              if (descriptor.id === action.id) {
+                descriptor.left = action.x;
+                descriptor.top = action.y;
+              }
+              return descriptor;
+            }
+          );
 
-      return updated;
+          // mark
+          updated.grid = Array2dUtils.setBox(
+            updated.grid,
+            action.x - 1,
+            action.y - 1,
+            oldDescriptor.cols,
+            oldDescriptor.rows,
+            "1"
+          );
+        }
+        return updated;
+      } catch (error) {
+        console.log(error, state);
+        return state;
+      }
     }
 
     case ADD_COLUMN: {
+      let grid = state.grid;
+      try {
+        grid = Array2dUtils.addColumn(state.grid);
+      } catch (error) {}
+      console.log(error, state);
       return {
         ...state,
         columns: state.columns + 1,
-        grid: Array2dUtils.addColumn(state.grid),
+        grid,
       };
     }
     case REMOVE_COLUMN: {
+      let grid = state.grid;
+      try {
+        grid = Array2dUtils.removeColumn(state.grid);
+      } catch (error) {}
+      console.log(error, state);
       const updated = {
         ...state,
         columns: Math.max(state.columns - 1, 0),
-        grid: Array2dUtils.removeColumn(state.grid),
+        grid,
       };
       // scan and remove items out of bounds
       updated.items = state.items.filter((descriptor): boolean => {
@@ -194,23 +225,34 @@ const reducer = (
           });
           return true;
         } catch (error) {
+          console.log(error, state);
           return false;
         }
       });
       return { ...updated };
     }
     case ADD_ROW: {
+      let grid = state.grid;
+      try {
+        grid = Array2dUtils.addRow(state.grid);
+      } catch (error) {}
+      console.log(error, state);
       return {
         ...state,
         rows: state.rows + 1,
-        grid: Array2dUtils.addRow(state.grid),
+        grid,
       };
     }
     case REMOVE_ROW: {
+      let grid = state.grid;
+      try {
+        grid = Array2dUtils.removeRow(state.grid);
+      } catch (error) {}
+      console.log(error, state);
       const updated = {
         ...state,
         rows: Math.max(state.rows - 1, 0),
-        grid: Array2dUtils.removeRow(state.grid),
+        grid,
       };
       // scan and remove items out of bounds
       updated.items = state.items.filter((descriptor): boolean => {
@@ -221,6 +263,7 @@ const reducer = (
           });
           return true;
         } catch (error) {
+          console.log(error, state);
           return false;
         }
       });
