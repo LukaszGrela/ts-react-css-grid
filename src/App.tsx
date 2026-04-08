@@ -1,6 +1,6 @@
+import './App.scss';
 import React from 'react';
 import { Provider } from 'react-redux';
-import './App.scss';
 import GridViewConnected from './components/GridView/GridViewConnected';
 import ToolboxConnected from './components/Toolbox/ToolboxConnected';
 import store from './store';

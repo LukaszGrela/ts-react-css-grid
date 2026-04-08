@@ -1,16 +1,16 @@
-import React from 'react';
-import './styles/index.scss';
-import ReactHammer, { ReactHammerProps } from 'react-hammerjs';
+import "./styles/index.scss";
+import React, { type ReactNode } from "react";
+import ReactHammer, { type ReactHammerProps } from "../../lib/ReactHammer";
 
-export const HANDLE_PAN = 'pan';
-export const HANDLE_TL = 'tl';
-export const HANDLE_BL = 'bl';
-export const HANDLE_TR = 'tr';
-export const HANDLE_BR = 'br';
-export const HANDLE_TOP = 'top';
-export const HANDLE_BOTTOM = 'bottom';
-export const HANDLE_RIGHT = 'right';
-export const HANDLE_LEFT = 'left';
+export const HANDLE_PAN = "pan";
+export const HANDLE_TL = "tl";
+export const HANDLE_BL = "bl";
+export const HANDLE_TR = "tr";
+export const HANDLE_BR = "br";
+export const HANDLE_TOP = "top";
+export const HANDLE_BOTTOM = "bottom";
+export const HANDLE_RIGHT = "right";
+export const HANDLE_LEFT = "left";
 
 export type TDirectionHandleType =
   | typeof HANDLE_PAN
@@ -24,14 +24,14 @@ export type TDirectionHandleType =
   | typeof HANDLE_BR;
 
 type TDirection =
-  | 'DIRECTION_NONE'
-  | 'DIRECTION_LEFT'
-  | 'DIRECTION_RIGHT'
-  | 'DIRECTION_UP'
-  | 'DIRECTION_DOWN'
-  | 'DIRECTION_HORIZONTAL'
-  | 'DIRECTION_VERTICAL'
-  | 'DIRECTION_ALL';
+  | "DIRECTION_NONE"
+  | "DIRECTION_LEFT"
+  | "DIRECTION_RIGHT"
+  | "DIRECTION_UP"
+  | "DIRECTION_DOWN"
+  | "DIRECTION_HORIZONTAL"
+  | "DIRECTION_VERTICAL"
+  | "DIRECTION_ALL";
 export interface IProps {
   type: TDirectionHandleType;
 
@@ -41,23 +41,23 @@ export interface IProps {
 const getDirection = (type: TDirectionHandleType): TDirection => {
   switch (type) {
     case HANDLE_PAN:
-      return 'DIRECTION_ALL';
+      return "DIRECTION_ALL";
     case HANDLE_TOP:
     case HANDLE_BOTTOM:
-      return 'DIRECTION_VERTICAL';
+      return "DIRECTION_VERTICAL";
     case HANDLE_RIGHT:
     case HANDLE_LEFT:
-      return 'DIRECTION_HORIZONTAL';
+      return "DIRECTION_HORIZONTAL";
     case HANDLE_TL:
     case HANDLE_TR:
     case HANDLE_BL:
     case HANDLE_BR:
-      return 'DIRECTION_ALL';
+      return "DIRECTION_ALL";
     default:
-      return 'DIRECTION_NONE';
+      return "DIRECTION_NONE";
   }
 };
-const DragHandle: React.FC<IProps> = (props: IProps): JSX.Element => {
+const DragHandle: React.FC<IProps> = (props: IProps): ReactNode => {
   const Wrapper = props.onChange ? ReactHammer : React.Fragment;
   const settings: ReactHammerProps = props.onChange
     ? {

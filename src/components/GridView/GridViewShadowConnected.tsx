@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import GridView, { IProps } from './GridView';
-import { AppState } from '../../store';
-import { IGridItemDescriptor } from '../../store/GridItems/types';
+import type { Dispatch } from 'redux';
+import GridView, { type IProps } from './GridView';
+import type { AppState } from '../../store';
+import type { IGridItemDescriptor } from '../../store/GridItems/types';
 
 type TStateProps = Pick<
   IProps,

@@ -1,8 +1,8 @@
-import React, { useReducer } from 'react';
-import { IGridItemDescriptor } from '../../store/GridItems/types';
+import React, { useReducer, type ReactNode } from "react";
+import { type IGridItemDescriptor } from "../../store/GridItems/types";
 
-import './styles/index.scss';
-import ReactHammer, { ReactHammerProps } from 'react-hammerjs';
+import "./styles/index.scss";
+import ReactHammer, { type ReactHammerProps } from "../../lib/ReactHammer";
 import DragHandle, {
   HANDLE_PAN,
   HANDLE_TL,
@@ -13,8 +13,8 @@ import DragHandle, {
   HANDLE_BOTTOM,
   HANDLE_RIGHT,
   HANDLE_LEFT,
-  TDirectionHandleType,
-} from '../DragHandle/DragHandle';
+  type TDirectionHandleType,
+} from "../DragHandle/DragHandle";
 
 interface IState {
   dragging: boolean;
@@ -25,11 +25,11 @@ interface IState {
 
   blocked: boolean;
 }
-const START_DRAGGING = 'START_DRAGGING';
-const STOP_DRAGGING = 'STOP_DRAGGING';
-const DRAGGING = 'DRAGGING';
-const RESET = 'RESET';
-const BLOCK_DRAGGING = 'BLOCK_DRAGGING';
+const START_DRAGGING = "START_DRAGGING";
+const STOP_DRAGGING = "STOP_DRAGGING";
+const DRAGGING = "DRAGGING";
+const RESET = "RESET";
+const BLOCK_DRAGGING = "BLOCK_DRAGGING";
 interface IStateAction {
   type:
     | typeof START_DRAGGING
@@ -50,7 +50,7 @@ const startDragging = (
   translateX: number,
   translateY: number,
   offsetX: number,
-  offsetY: number
+  offsetY: number,
 ): IStartDraggingAction => ({
   type: START_DRAGGING,
   translateX,
@@ -61,7 +61,7 @@ const startDragging = (
 
 const stopDragging = (
   translateX?: number,
-  translateY?: number
+  translateY?: number,
 ): IStateAction => ({
   type: STOP_DRAGGING,
   translateX,
@@ -77,7 +77,7 @@ const blockDragging = (): IStateAction => ({
 
 const updateDragging = (
   translateX: number,
-  translateY: number
+  translateY: number,
 ): IStateAction => ({
   type: DRAGGING,
   translateX,
@@ -95,7 +95,7 @@ const initialState: IState = {
 
 const reducer = (
   state: IState,
-  action: IStateAction | IStartDraggingAction
+  action: IStateAction | IStartDraggingAction,
 ): IState => {
   switch (action.type) {
     case START_DRAGGING:
@@ -139,7 +139,7 @@ export interface IProps {
     id: string,
     x?: number,
     y?: number,
-    target?: HTMLElement
+    target?: HTMLElement,
   ) => void;
   onResize: (
     childDescriptor: IGridItemDescriptor,
@@ -147,7 +147,7 @@ export interface IProps {
     y?: number,
     width?: number,
     height?: number,
-    target?: HTMLElement | null
+    target?: HTMLElement | null,
   ) => void;
 }
 
@@ -159,24 +159,24 @@ const GridViewItem: React.FC<IProps> = ({
   onUpdateDrag,
   onStopDrag,
   onResize,
-}: IProps): JSX.Element => {
+}: IProps): ReactNode => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const updateResize = (
     type: string,
     childDescriptor: IGridItemDescriptor,
     deltaX: number,
-    deltaY: number,
+    _deltaY: number,
     ow: number,
-    oh: number,
-    target: Element | null
+    _oh: number,
+    target: Element | null,
   ): void => {
     let x = childDescriptor.left;
     let y = childDescriptor.top;
     let width = childDescriptor.cols;
     let height = childDescriptor.rows;
     let column = ow / childDescriptor.cols;
-    let row = oh / childDescriptor.rows;
+    // let row = oh / childDescriptor.rows;
     let span: number;
     switch (type) {
       case HANDLE_RIGHT:
@@ -218,31 +218,29 @@ const GridViewItem: React.FC<IProps> = ({
 
   const handleDragHandleChange = (
     type: TDirectionHandleType,
-    e: HammerInput
+    e: HammerInput,
   ): void => {
-    console.log('handleDragHandleChange');
+    console.log("handleDragHandleChange");
     const {
-      center: { x: cx, y: cy },
+      // center: { x: cx, y: cy },
       target: {
-        offsetLeft: ox,
-        offsetTop: oy,
-        offsetHeight,
-        offsetWidth,
+        // offsetLeft: ox,
+        // offsetTop: oy,
+        // offsetHeight,
+        // offsetWidth,
         offsetParent,
       },
       deltaX,
       deltaY,
     } = e;
-    const {
-      offsetHeight: oh,
-      offsetWidth: ow,
-    } = (offsetParent as HTMLElement) || {
-      offsetHeight: -1,
-      offsetWidth: -1,
-    };
-    if (e.type === 'panend' || e.type === 'pancancel') {
+    const { offsetHeight: oh, offsetWidth: ow } =
+      (offsetParent as HTMLElement) || {
+        offsetHeight: -1,
+        offsetWidth: -1,
+      };
+    if (e.type === "panend" || e.type === "pancancel") {
       dispatch(resetDragging());
-      if (e.type === 'pancancel') {
+      if (e.type === "pancancel") {
         onResize(childDescriptor);
       } else {
         updateResize(
@@ -252,10 +250,10 @@ const GridViewItem: React.FC<IProps> = ({
           deltaY,
           ow,
           oh,
-          offsetParent
+          offsetParent,
         );
       }
-    } else if (e.type === 'panstart') {
+    } else if (e.type === "panstart") {
       dispatch(blockDragging());
     } else {
       // updateResize(type, childDescriptor, deltaX, deltaY, ow, oh, offsetParent);
@@ -265,7 +263,7 @@ const GridViewItem: React.FC<IProps> = ({
   const Wrapper = draggable ? ReactHammer : React.Fragment;
   const props: ReactHammerProps | undefined = draggable
     ? {
-        direction: 'DIRECTION_ALL',
+        direction: "DIRECTION_ALL",
         options: {
           recognizers: {
             pan: {
@@ -287,8 +285,8 @@ const GridViewItem: React.FC<IProps> = ({
               center.x - target.offsetLeft - offsetX,
               center.y - target.offsetTop - offsetY,
               center.x - target.offsetLeft - deltaX,
-              center.y - target.offsetTop - deltaY
-            )
+              center.y - target.offsetTop - deltaY,
+            ),
           );
 
           onStartDrag(childDescriptor.id);
@@ -296,7 +294,7 @@ const GridViewItem: React.FC<IProps> = ({
             childDescriptor.id,
             center.x /*  - target.offsetLeft - offsetX*/,
             center.y /*  - target.offsetTop - offsetY*/,
-            target
+            target,
           );
         },
         onPanEnd: (event: HammerInput) => {
@@ -310,24 +308,24 @@ const GridViewItem: React.FC<IProps> = ({
           dispatch(
             stopDragging(
               center.x - target.offsetLeft - state.offsetX,
-              center.y - target.offsetTop - state.offsetY
-            )
+              center.y - target.offsetTop - state.offsetY,
+            ),
           );
           onUpdateDrag(
             childDescriptor.id,
             center.x /*  - target.offsetLeft - state.offsetX */,
             center.y /*  - target.offsetTop - state.offsetY */,
-            target
+            target,
           );
           dispatch(resetDragging());
           onStopDrag(
             childDescriptor.id,
             center.x /* - target.offsetLeft - state.offsetX */,
             center.y /*  - target.offsetTop  - state.offsetY */,
-            target
+            target,
           );
         },
-        onPanCancel: (event: HammerInput) => {
+        onPanCancel: (_event: HammerInput) => {
           if (state.blocked) {
             return;
           }
@@ -348,14 +346,14 @@ const GridViewItem: React.FC<IProps> = ({
           dispatch(
             updateDragging(
               center.x - target.offsetLeft - state.offsetX,
-              center.y - target.offsetTop - state.offsetY
-            )
+              center.y - target.offsetTop - state.offsetY,
+            ),
           );
           onUpdateDrag(
             childDescriptor.id,
             center.x /* - target.offsetLeft   - state.offsetX*/,
             center.y /*  - target.offsetTop  - state.offsetY*/,
-            target
+            target,
           );
         },
       }
@@ -363,10 +361,10 @@ const GridViewItem: React.FC<IProps> = ({
   return (
     <Wrapper {...(props || {})}>
       <div
-        className={`GridViewItem${draggable ? ' GridViewItem--draggable' : ''}${
-          state.dragging ? ' GridViewItem--dragged' : ''
+        className={`GridViewItem${draggable ? " GridViewItem--draggable" : ""}${
+          state.dragging ? " GridViewItem--dragged" : ""
         }
-        ${state.blocked ? ' GridViewItem--with-handle' : ''}`}
+        ${state.blocked ? " GridViewItem--with-handle" : ""}`}
         key={childDescriptor.id}
         style={
           draggable
@@ -393,7 +391,8 @@ const GridViewItem: React.FC<IProps> = ({
                     }
                   : {}),
               }
-        }>
+        }
+      >
         <DragHandle type={HANDLE_PAN} />
         <DragHandle type={HANDLE_TL} onChange={handleDragHandleChange} />
         <DragHandle type={HANDLE_TR} onChange={handleDragHandleChange} />

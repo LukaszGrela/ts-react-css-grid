@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { type ReactNode } from "react";
 
-import './styles/index.scss';
+import "./styles/index.scss";
 
 export const ADD = 1;
 export const REMOVE = -1;
@@ -21,7 +21,7 @@ const NumberSpinner: React.FC<IProps> = ({
   disablePrev,
   value,
   onChange,
-}: IProps): JSX.Element => {
+}: IProps): ReactNode => {
   return (
     <div className="NumberSpinner">
       <button
@@ -29,7 +29,8 @@ const NumberSpinner: React.FC<IProps> = ({
         disabled={disablePrev}
         onClick={(): void => {
           onChange(value - 1, REMOVE);
-        }}>
+        }}
+      >
         -
       </button>
       <span className="NumberSpinner_label">{value || 0}</span>
@@ -38,7 +39,8 @@ const NumberSpinner: React.FC<IProps> = ({
         disabled={disableNext}
         onClick={(): void => {
           onChange(value + 1, ADD);
-        }}>
+        }}
+      >
         +
       </button>
     </div>

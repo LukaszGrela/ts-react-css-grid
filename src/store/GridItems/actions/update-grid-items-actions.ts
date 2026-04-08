@@ -1,13 +1,13 @@
 import {
-  IModifyGridItemsAction,
+  type IModifyGridItemsAction,
   GRID_ITEMS_ADD,
   GRID_ITEMS_CLEAR,
-  IRemoveGridItemAction,
+  type IRemoveGridItemAction,
   GRID_ITEMS_REMOVE,
-  IRepositionGridItem,
+  type IRepositionGridItem,
   GRID_ITEMS_REPOSITION,
   GRID_ITEMS_RESIZE,
-  IResizeGridItem,
+  type IResizeGridItem,
 } from '../types';
 
 export const addGridItem = (): IModifyGridItemsAction => ({

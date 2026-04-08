@@ -1,4 +1,4 @@
-import { IChangeGridGap, SET_ROW_GAP, SET_COLUMN_GAP } from '../types';
+import { type IChangeGridGap, SET_ROW_GAP, SET_COLUMN_GAP } from '../types';
 
 export const setRowGap = (value: number): IChangeGridGap => ({
   type: SET_ROW_GAP,

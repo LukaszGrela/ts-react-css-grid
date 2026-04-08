@@ -1,5 +1,5 @@
 import {
-  IDragGridItemAction,
+  type IDragGridItemAction,
   START_DRAG_GRID_ITEM,
   STOP_DRAG_GRID_ITEM,
   UPDATE_DRAG_GRID_ITEM,

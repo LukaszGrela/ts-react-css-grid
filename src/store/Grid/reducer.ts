@@ -1,12 +1,12 @@
 import {
-  IModifyGridAction,
-  IGridState,
+  // type IModifyGridAction,
+  type IGridState,
   ADD_COLUMN,
   REMOVE_COLUMN,
   ADD_ROW,
   REMOVE_ROW,
-  ICSSGridStyle,
-  TGridActions,
+  type ICSSGridStyle,
+  type TGridActions,
   SET_COLUMN_GAP,
   SET_ROW_GAP,
 } from './types';

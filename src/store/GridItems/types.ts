@@ -1,4 +1,4 @@
-import { AnyAction } from "redux";
+import { type Action } from "redux";
 
 export const GRID_ITEMS_ADD = "grid/items/ADD";
 export const GRID_ITEMS_CLEAR = "grid/items/CLEAR";
@@ -11,7 +11,7 @@ export const STOP_DRAG_GRID_ITEM = "grid/item/drag/STOP";
 export const GRID_ITEMS_REPOSITION = "grid/item/REPOSITION";
 export const GRID_ITEMS_RESIZE = "grid/item/RESIZE";
 
-export interface IModifyGridItemsAction extends AnyAction {
+export interface IModifyGridItemsAction extends Action {
   type:
     | typeof GRID_ITEMS_ADD
     | typeof GRID_ITEMS_CLEAR

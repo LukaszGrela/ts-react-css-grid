@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import Toolbox, {
-  IProps as IToolboxProps,
-  TAction,
+  type IProps as IToolboxProps,
+  type TAction,
   ADD,
   REMOVE,
 } from './Toolbox';
-import { AppState } from '../../store';
-import { Dispatch } from 'redux';
+import type { AppState } from '../../store';
+import type { Dispatch } from 'redux';
 import {
   addColumn,
   removeColumn,

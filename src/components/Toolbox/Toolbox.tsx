@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { type ReactNode } from "react";
 
-import './styles/index.scss';
-import NumberSpinner from '../NumberSpinner/NumberSpinner';
+import "./styles/index.scss";
+import NumberSpinner from "../NumberSpinner/NumberSpinner";
 
-export const ADD = 'ADD';
-export const REMOVE = 'REMOVE';
+export const ADD = "ADD";
+export const REMOVE = "REMOVE";
 
 export type TAction = typeof ADD | typeof REMOVE;
 export interface IProps {
@@ -35,7 +35,7 @@ const Toolbox: React.FC<IProps> = ({
   changeRowGap,
   columnGap,
   changeColumnGap,
-}: IProps): JSX.Element => {
+}: IProps): ReactNode => {
   const addColumn = (): void => modifyColumn(ADD);
   const removeColumn = (): void => modifyColumn(REMOVE);
   const addRow = (): void => modifyRow(ADD);
@@ -53,7 +53,8 @@ const Toolbox: React.FC<IProps> = ({
         <button
           className="Toolbox_button"
           disabled={columns <= 1}
-          onClick={removeColumn}>
+          onClick={removeColumn}
+        >
           Delete Column
         </button>
         <button className="Toolbox_button" disabled={false} onClick={addRow}>
@@ -62,20 +63,23 @@ const Toolbox: React.FC<IProps> = ({
         <button
           className="Toolbox_button"
           disabled={rows <= 1}
-          onClick={removeRow}>
+          onClick={removeRow}
+        >
           Delete Row
         </button>
         <hr className="Toolbox_spacer" />
         <button
           className="Toolbox_button"
           disabled={columns * rows <= gridItemsLength && gridItemsLength !== 0}
-          onClick={addGridItem}>
+          onClick={addGridItem}
+        >
           Add grid item
         </button>
         <button
           className="Toolbox_button"
           disabled={gridItemsLength === 0}
-          onClick={clearGridItems}>
+          onClick={clearGridItems}
+        >
           Remove all items
         </button>
         <hr className="Toolbox_spacer" />
