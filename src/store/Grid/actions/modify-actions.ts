@@ -1,5 +1,5 @@
 import {
-  IModifyGridAction,
+  type IModifyGridAction,
   ADD_COLUMN,
   ADD_ROW,
   REMOVE_ROW,

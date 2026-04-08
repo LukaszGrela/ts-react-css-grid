@@ -1,4 +1,4 @@
-import { AnyAction } from "redux";
+import type { Action } from "redux";
 
 export const ADD_COLUMN = "grid/column/ADD";
 export const REMOVE_COLUMN = "grid/column/REMOVE";
@@ -8,7 +8,7 @@ export const REMOVE_ROW = "grid/row/REMOVE";
 export const SET_ROW_GAP = "grid/gap/row/SET";
 export const SET_COLUMN_GAP = "grid/column/row/SET";
 
-export interface IModifyGridAction extends AnyAction {
+export interface IModifyGridAction extends Action {
   type:
     | typeof ADD_COLUMN
     | typeof REMOVE_COLUMN
@@ -16,7 +16,7 @@ export interface IModifyGridAction extends AnyAction {
     | typeof REMOVE_ROW;
 }
 
-export interface IChangeGridGap extends AnyAction {
+export interface IChangeGridGap extends Action {
   type: typeof SET_ROW_GAP | typeof SET_COLUMN_GAP;
   value: number;
 }

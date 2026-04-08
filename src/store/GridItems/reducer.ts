@@ -1,22 +1,22 @@
 import {
-  IGridItemsState,
-  IModifyGridItemsAction,
-  IRemoveGridItemAction,
+  type IGridItemsState,
+  type IModifyGridItemsAction,
+  type IRemoveGridItemAction,
   GRID_ITEMS_ADD,
-  IGridItemDescriptor,
+  type IGridItemDescriptor,
   GRID_ITEMS_CLEAR,
   START_DRAG_GRID_ITEM,
   STOP_DRAG_GRID_ITEM,
   GRID_ITEMS_REPOSITION,
-  IRepositionGridItem,
-  IResizeGridItem,
+  type IRepositionGridItem,
+  type IResizeGridItem,
   GRID_ITEMS_RESIZE,
 } from "./types";
 import { randomString } from "../../utils/randomString";
 import { stringToHashedColour } from "../../utils/stringToHashedColour";
 import * as Array2dUtils from "../../utils/2d-array-utils";
 import {
-  TGridActions,
+  type TGridActions,
   ADD_COLUMN,
   REMOVE_COLUMN,
   ADD_ROW,
@@ -51,7 +51,7 @@ const reducer = (
     | IRemoveGridItemAction
     | IRepositionGridItem
     | IResizeGridItem
-    | TGridActions
+    | TGridActions,
 ): IGridItemsState => {
   switch (action.type) {
     case GRID_ITEMS_ADD: {
@@ -93,7 +93,7 @@ const reducer = (
     case GRID_ITEMS_RESIZE: {
       try {
         const match: IGridItemDescriptor | undefined = state.items.find(
-          (item): boolean => item.id === action.id
+          (item): boolean => item.id === action.id,
         );
         const updated = {
           ...state,
@@ -108,20 +108,18 @@ const reducer = (
             oldDescriptor.left - 1,
             oldDescriptor.top - 1,
             oldDescriptor.cols,
-            oldDescriptor.rows
+            oldDescriptor.rows,
           );
           // update descriptor
-          updated.items = state.items.map(
-            (descriptor): IGridItemDescriptor => {
-              if (descriptor.id === action.id) {
-                descriptor.left = action.x;
-                descriptor.top = action.y;
-                descriptor.cols = action.cols;
-                descriptor.rows = action.rows;
-              }
-              return descriptor;
+          updated.items = state.items.map((descriptor): IGridItemDescriptor => {
+            if (descriptor.id === action.id) {
+              descriptor.left = action.x;
+              descriptor.top = action.y;
+              descriptor.cols = action.cols;
+              descriptor.rows = action.rows;
             }
-          );
+            return descriptor;
+          });
           // mark
           updated.grid = Array2dUtils.setBox(
             updated.grid,
@@ -129,7 +127,7 @@ const reducer = (
             action.y - 1,
             action.cols,
             action.rows,
-            "1"
+            "1",
           );
         }
         return updated;
@@ -148,7 +146,7 @@ const reducer = (
           return { ...state };
         }
         const match: IGridItemDescriptor | undefined = state.items.find(
-          (item): boolean => item.id === action.id
+          (item): boolean => item.id === action.id,
         );
         const updated = {
           ...state,
@@ -163,18 +161,16 @@ const reducer = (
             oldDescriptor.left - 1,
             oldDescriptor.top - 1,
             oldDescriptor.cols,
-            oldDescriptor.rows
+            oldDescriptor.rows,
           );
           // update an item
-          updated.items = state.items.map(
-            (descriptor): IGridItemDescriptor => {
-              if (descriptor.id === action.id) {
-                descriptor.left = action.x;
-                descriptor.top = action.y;
-              }
-              return descriptor;
+          updated.items = state.items.map((descriptor): IGridItemDescriptor => {
+            if (descriptor.id === action.id) {
+              descriptor.left = action.x;
+              descriptor.top = action.y;
             }
-          );
+            return descriptor;
+          });
 
           // mark
           updated.grid = Array2dUtils.setBox(
@@ -183,7 +179,7 @@ const reducer = (
             action.y - 1,
             oldDescriptor.cols,
             oldDescriptor.rows,
-            "1"
+            "1",
           );
         }
         return updated;
@@ -197,8 +193,9 @@ const reducer = (
       let grid = state.grid;
       try {
         grid = Array2dUtils.addColumn(state.grid);
-      } catch (error) {}
-      console.log(error, state);
+      } catch (error) {
+        console.log(error, state);
+      }
       return {
         ...state,
         columns: state.columns + 1,
@@ -209,8 +206,9 @@ const reducer = (
       let grid = state.grid;
       try {
         grid = Array2dUtils.removeColumn(state.grid);
-      } catch (error) {}
-      console.log(error, state);
+      } catch (error) {
+        console.log(error, state);
+      }
       const updated = {
         ...state,
         columns: Math.max(state.columns - 1, 0),
@@ -235,8 +233,9 @@ const reducer = (
       let grid = state.grid;
       try {
         grid = Array2dUtils.addRow(state.grid);
-      } catch (error) {}
-      console.log(error, state);
+      } catch (error) {
+        console.log(error, state);
+      }
       return {
         ...state,
         rows: state.rows + 1,
@@ -247,8 +246,9 @@ const reducer = (
       let grid = state.grid;
       try {
         grid = Array2dUtils.removeRow(state.grid);
-      } catch (error) {}
-      console.log(error, state);
+      } catch (error) {
+        console.log(error, state);
+      }
       const updated = {
         ...state,
         rows: Math.max(state.rows - 1, 0),

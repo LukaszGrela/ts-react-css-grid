@@ -1,7 +1,7 @@
-import { Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import GridView, { IProps } from './GridView';
-import { AppState } from '../../store';
+import GridView, { type IProps } from './GridView';
+import type { AppState } from '../../store';
 import {
   dragItemStart,
   dragItemStop,
@@ -11,8 +11,8 @@ import {
 } from '../../store/GridItems/actions';
 
 import { throttle } from 'lodash';
-import { ICoords2D } from '../../utils/2d-array-utils';
-import { IGridItemDescriptor } from '../../store/GridItems/types';
+import type { ICoords2D } from '../../utils/2d-array-utils';
+import type { IGridItemDescriptor } from '../../store/GridItems/types';
 
 const clamp = (val: number, min: number, max: number) =>
   Math.max(min, Math.min(val, max));
